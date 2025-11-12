@@ -1,0 +1,24 @@
+[project]
+name = "python-katas"
+version = "0.1.0"
+description = "파이썬으로 진행하는 코딩 카타 - XP 프로그래밍 방식 학습"
+requires-python = ">=3.13"
+dependencies = [
+    "pytest>=8.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hidden-number"]
+
+[tool.pytest.ini_options]
+testpaths = ["hidden-number/tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+[tool.uv]
+dev-dependencies = []
