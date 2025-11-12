@@ -3,6 +3,16 @@
 파이썬으로 진행하는 코딩 카타 프로젝트입니다.
 실전 프로그래밍 실력을 향상시키기 위해 Clean Architecture와 XP 프로그래밍 방식으로 학습합니다.
 
+## 명령어 모음
+```bash
+# gemini 실행 관련
+nvm use 20.19.0 
+gemini --version
+npm update -g @google-cloud/gemini-cli
+
+
+```
+
 ## 기술 스택
 
 | 기술 | 용도 |
