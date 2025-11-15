@@ -11,6 +11,9 @@ gemini --version
 npm update -g @google-cloud/gemini-cli
 
 
+
+git fetch --all
+git checkout -b wu origin/wu # 새로 브랜치를 만들면서 이동할건데, 원격저장소에 wu와 매칭된다.
 ```
 
 ## 기술 스택
@@ -83,7 +86,7 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 ```bash
 # 저장소 클론
-git clone <repository-url>
+git clone https://github.com/TakSung/python-katas.git
 cd python-katas
 
 # 의존성 설치 및 가상환경 생성
