@@ -1,6 +1,30 @@
 ﻿# Windows 11 개발 환경 자동 설치 스크립트
 # Python 3.13, VSCode, GitHub CLI, Windows Terminal, NVM 설치
 
+# ===== 설치 패키지 목록 정의 =====
+
+# Chocolatey로 설치할 패키지
+$packagesToInstall = @{
+    "python313" = "Python 3.13"
+    "vscode" = "Visual Studio Code"
+    "git" = "GitHub CLI"
+    "microsoft-windows-terminal" = "Windows Terminal"
+    "nvm" = "NVM (Node Version Manager)"
+}
+
+# npm으로 설치할 글로벌 패키지
+$npmPackages = @{
+    "@google/gemini-cli" = @{
+        "display_name" = "Gemini CLI"
+        "command" = "gemini"
+    }
+    # 추가 패키지는 여기에 등록
+    # "package-name" = @{
+    #     "display_name" = "표시 이름"
+    #     "command" = "명령어"
+    # }
+}
+
 # ===== 시작 메시지 =====
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "개발 환경 자동 설치 시작" -ForegroundColor Cyan
@@ -54,14 +78,6 @@ Write-Host ""
 
 # ===== Step 2: 설치할 패키지 확인 =====
 Write-Host "[2/6] 설치할 패키지 확인 중..." -ForegroundColor Yellow
-
-$packagesToInstall = @{
-    "python313" = "Python 3.13"
-    "vscode" = "Visual Studio Code"
-    "git" = "GitHub CLI"
-    "microsoft-windows-terminal" = "Windows Terminal"
-    "nvm" = "NVM (Node Version Manager)"
-}
 
 $toInstall = @()
 $alreadyInstalled = @()
@@ -193,35 +209,52 @@ if (Get-Command nvm -ErrorAction SilentlyContinue) {
 }
 Write-Host ""
 
-# ===== Step 6: Gemini CLI 설치 =====
-Write-Host "[6/8] Gemini CLI 설치 중..." -ForegroundColor Yellow
+# ===== Step 6: npm 글로벌 패키지 설치 =====
+Write-Host "[6/8] npm 글로벌 패키지 설치 중..." -ForegroundColor Yellow
 
 if (Get-Command npm -ErrorAction SilentlyContinue) {
-    # Gemini CLI 설치 확인
-    $geminiInstalled = npm list -g @google/gemini-cli 2>$null
-    if ($geminiInstalled -match "@google/gemini-cli") {
-        Write-Host "✅ Gemini CLI 이미 설치됨" -ForegroundColor Green
-    } else {
-        Write-Host "📦 Gemini CLI 설치 중..." -ForegroundColor Cyan
-        npm install -g @google/gemini-cli
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "✅ Gemini CLI 설치 완료" -ForegroundColor Green
+    foreach ($package in $npmPackages.Keys) {
+        $packageInfo = $npmPackages[$package]
+        $displayName = $packageInfo["display_name"]
+
+        # 패키지 설치 확인
+        $packageInstalled = npm list -g $package 2>$null
+        if ($packageInstalled -match $package) {
+            Write-Host "  ✓ $displayName 이미 설치됨 (건너뜀)" -ForegroundColor Gray
         } else {
-            Write-Host "❌ Gemini CLI 설치 실패" -ForegroundColor Red
+            Write-Host "  + $displayName 설치 중..." -ForegroundColor Cyan
+            npm install -g $package
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "  ✅ $displayName 설치 완료" -ForegroundColor Green
+            } else {
+                Write-Host "  ❌ $displayName 설치 실패" -ForegroundColor Red
+            }
         }
     }
 
-    # Gemini CLI 버전 확인
-    if (Get-Command gemini -ErrorAction SilentlyContinue) {
-        $geminiVersion = gemini --version 2>$null
-        if ($geminiVersion) {
-            Write-Host "  Gemini CLI 버전: $geminiVersion" -ForegroundColor Gray
+    # 설치된 패키지 버전 확인
+    Write-Host ""
+    Write-Host "설치된 npm 패키지:" -ForegroundColor White
+    foreach ($package in $npmPackages.Keys) {
+        $packageInfo = $npmPackages[$package]
+        $displayName = $packageInfo["display_name"]
+        $command = $packageInfo["command"]
+
+        if (Get-Command $command -ErrorAction SilentlyContinue) {
+            $version = & $command --version 2>$null
+            if ($version) {
+                Write-Host "  ✅ $displayName`: $version" -ForegroundColor Green
+            } else {
+                Write-Host "  ✅ $displayName`: 설치됨" -ForegroundColor Green
+            }
         }
     }
 } else {
-    Write-Host "⚠️ npm이 설치되지 않아 Gemini CLI 설치를 건너뜁니다." -ForegroundColor Yellow
+    Write-Host "⚠️ npm이 설치되지 않아 패키지 설치를 건너뜁니다." -ForegroundColor Yellow
     Write-Host "  터미널 재시작 후 다음 명령어로 수동 설치:" -ForegroundColor Gray
-    Write-Host "  npm install -g @google/gemini-cli" -ForegroundColor Gray
+    foreach ($package in $npmPackages.Keys) {
+        Write-Host "  npm install -g $package" -ForegroundColor Gray
+    }
 }
 Write-Host ""
 
