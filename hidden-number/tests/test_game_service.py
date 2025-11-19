@@ -22,3 +22,11 @@ def test_새로운_게임_생성():
     
     #then 게임이 정상적인지 확인 
     assert new_game.guess(30) == GuessResult.TOO_LOW
+    
+def test_process_guess_는_추측결과를_정확히_반환한다():
+    fake_generator = FakeRandomGenerator(fixed_number=50)
+    game_service = GameService(generator=fake_generator)
+    game_service.new_game()
+    result = game_service.process_guess(30)
+    assert result == GuessResult.TOO_LOW
+    assert game_service.current_game.attempts == 1 
