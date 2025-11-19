@@ -10,10 +10,24 @@ nvm use 20.19.0
 gemini --version
 npm update -g @google-cloud/gemini-cli
 
+# gemini 사용패턴
+gemini
+### 들어간 이후에
+###### 1
+@agent/sub-agent/navigator.md 네비게이터가 되서 나와 같이 페어코딩 해줘. 알았으면 네라고 해줘.
+###### 2 : hidden-number 진행할때.
+hidden-number/README.md 를 참고하여 지금 내가 무엇을 해야할지 알려줘
 
+# git 명령어
 
+### checkout 명령어
 git fetch --all
 git checkout -b wu origin/wu # 새로 브랜치를 만들면서 이동할건데, 원격저장소에 wu와 매칭된다.
+
+### 변경사항 업데이트
+git fetch --all
+git pull
+git merge origin/main
 ```
 
 ## 기술 스택
