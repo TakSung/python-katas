@@ -24,7 +24,10 @@ hidden-number/README.md 를 참고하여 지금 내가 무엇을 해야할지 �
 git fetch --all
 git checkout -b wu origin/wu # 새로 브랜치를 만들면서 이동할건데, 원격저장소에 wu와 매칭된다.
 
-
+### 변경사항 업데이트
+git fetch --all
+git pull
+git merge origin/main
 ```
 
 ## 기술 스택
