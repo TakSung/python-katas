@@ -152,8 +152,81 @@ if (Get-Command nvm -ErrorAction SilentlyContinue) {
 }
 Write-Host ""
 
-# ===== Step 5: pip 업그레이드 =====
-Write-Host "[5/6] pip 업그레이드 중..." -ForegroundColor Yellow
+# ===== Step 5: Node.js 20.19.0 설치 및 설정 =====
+Write-Host "[5/8] Node.js 20.19.0 설치 및 설정 중..." -ForegroundColor Yellow
+
+if (Get-Command nvm -ErrorAction SilentlyContinue) {
+    # Node.js 20.19.0 설치 확인
+    $nodeList = nvm list
+    if ($nodeList -match "20.19.0") {
+        Write-Host "✅ Node.js 20.19.0 이미 설치됨" -ForegroundColor Green
+    } else {
+        Write-Host "📦 Node.js 20.19.0 설치 중..." -ForegroundColor Cyan
+        nvm install 20.19.0
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Node.js 20.19.0 설치 완료" -ForegroundColor Green
+        } else {
+            Write-Host "❌ Node.js 20.19.0 설치 실패" -ForegroundColor Red
+        }
+    }
+
+    # Node.js 20.19.0 활성화
+    Write-Host "🔄 Node.js 20.19.0 활성화 중..." -ForegroundColor Cyan
+    nvm use 20.19.0
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "✅ Node.js 20.19.0 활성화 완료" -ForegroundColor Green
+
+        # 환경 변수 새로고침
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine) + ";" + [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::User)
+
+        # Node 버전 확인
+        $nodeVersion = node --version
+        Write-Host "  현재 Node 버전: $nodeVersion" -ForegroundColor Gray
+    } else {
+        Write-Host "⚠️ Node.js 20.19.0 활성화 실패" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "⚠️ NVM이 설치되지 않아 Node.js 설정을 건너뜁니다." -ForegroundColor Yellow
+    Write-Host "  터미널 재시작 후 다음 명령어로 수동 설치:" -ForegroundColor Gray
+    Write-Host "  nvm install 20.19.0" -ForegroundColor Gray
+    Write-Host "  nvm use 20.19.0" -ForegroundColor Gray
+}
+Write-Host ""
+
+# ===== Step 6: Gemini CLI 설치 =====
+Write-Host "[6/8] Gemini CLI 설치 중..." -ForegroundColor Yellow
+
+if (Get-Command npm -ErrorAction SilentlyContinue) {
+    # Gemini CLI 설치 확인
+    $geminiInstalled = npm list -g @google/gemini-cli 2>$null
+    if ($geminiInstalled -match "@google/gemini-cli") {
+        Write-Host "✅ Gemini CLI 이미 설치됨" -ForegroundColor Green
+    } else {
+        Write-Host "📦 Gemini CLI 설치 중..." -ForegroundColor Cyan
+        npm install -g @google/gemini-cli
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Gemini CLI 설치 완료" -ForegroundColor Green
+        } else {
+            Write-Host "❌ Gemini CLI 설치 실패" -ForegroundColor Red
+        }
+    }
+
+    # Gemini CLI 버전 확인
+    if (Get-Command gemini -ErrorAction SilentlyContinue) {
+        $geminiVersion = gemini --version 2>$null
+        if ($geminiVersion) {
+            Write-Host "  Gemini CLI 버전: $geminiVersion" -ForegroundColor Gray
+        }
+    }
+} else {
+    Write-Host "⚠️ npm이 설치되지 않아 Gemini CLI 설치를 건너뜁니다." -ForegroundColor Yellow
+    Write-Host "  터미널 재시작 후 다음 명령어로 수동 설치:" -ForegroundColor Gray
+    Write-Host "  npm install -g @google/gemini-cli" -ForegroundColor Gray
+}
+Write-Host ""
+
+# ===== Step 7: pip 업그레이드 =====
+Write-Host "[7/8] pip 업그레이드 중..." -ForegroundColor Yellow
 if ($installStatus["Python"]) {
     python -m pip install --upgrade pip
     Write-Host "✅ pip 업그레이드 완료" -ForegroundColor Green
@@ -162,8 +235,8 @@ if ($installStatus["Python"]) {
 }
 Write-Host ""
 
-# ===== Step 6: Python venv 테스트 =====
-Write-Host "[6/6] Python 가상환경 테스트 중..." -ForegroundColor Yellow
+# ===== Step 8: Python venv 테스트 =====
+Write-Host "[8/8] Python 가상환경 테스트 중..." -ForegroundColor Yellow
 if ($installStatus["Python"]) {
     try {
         $testVenvPath = Join-Path $env:TEMP "test_venv"
@@ -188,8 +261,8 @@ if ($installStatus["Python"]) {
 }
 Write-Host ""
 
-# ===== Step 7: 설치 결과 요약 =====
-Write-Host "[7/7] 설치 결과 요약" -ForegroundColor Yellow
+# ===== 설치 결과 요약 =====
+Write-Host "설치 결과 요약" -ForegroundColor Yellow
 Write-Host "========================================" -ForegroundColor Cyan
 
 if ($alreadyInstalled.Count -gt 0) {
