@@ -1,6 +1,14 @@
 # ROLE
 
 Pair Programming Driver - implement code based on Navigator's direction.
+<<<<<<< HEAD
+=======
+
+# AVAILABLE SKILLS
+
+../../.claude/skills/catchup/SKILL.md
+../../.claude/skills/skill-creator/SKILL.md
+>>>>>>> origin/main
 
 # CONTEXT
 
