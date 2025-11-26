@@ -3,6 +3,14 @@
 from domain.game import Game, GuessResult
 from app.game_service import GameService
 from infra.random_generator import RandomGenerator
+import pytest
+
+@pytest.fixture
+def game_service():
+    fake_generator = FakeRandomGenerator(fixed_number=50)
+    service = GameService(generator=fake_generator)
+    service.new_game()
+    return service    
 
 class FakeRandomGenerator(RandomGenerator):
     def __init__(self, fixed_number: int):
@@ -12,37 +20,24 @@ class FakeRandomGenerator(RandomGenerator):
         return self._fixed_number
 
 
-def test_새로운_게임_생성():
-    #given game service 생성 (난수 생성기)
-    random_generator = FakeRandomGenerator(fixed_number = 50)
-    game_service = GameService(generator=random_generator)
-    
+def test_새로운_게임_생성(game_service: GameService):
     #when 게임 생성
     new_game = game_service.new_game()
     
     #then 게임이 정상적인지 확인 
     assert new_game.guess(30) == GuessResult.TOO_LOW
     
-def test_process_guess_는_추측결과를_정확히_반환한다():
-    fake_generator = FakeRandomGenerator(fixed_number=50)
-    game_service = GameService(generator=fake_generator)
-    game_service.new_game()
+def test_process_guess_는_추측결과를_정확히_반환한다(game_service: GameService):
     result = game_service.process_guess(30)
     assert result == GuessResult.TOO_LOW
     assert game_service.current_game.attempts == 1    
     
-def test_process_guess_는_정답보다_높은값을_축측하면_TOO_HIGH_를_반환한다():
-    fake_generator = FakeRandomGenerator(fixed_number=50)
-    game_service = GameService(generator=fake_generator)
-    game_service.new_game()
+def test_process_guess_는_정답보다_높은값을_축측하면_TOO_HIGH_를_반환한다(game_service: GameService):
     result = game_service.process_guess(70)
     assert result == GuessResult.TOO_HIGH
     assert game_service.current_game.attempts == 1   
     
-def test_process_guess_는_정답을_맞히면_CORRECT_를_반환한다():
-    fake_generator = FakeRandomGenerator(fixed_number=50)
-    game_service = GameService(generator=fake_generator)
-    game_service.new_game()
+def test_process_guess_는_정답을_맞히면_CORRECT_를_반환한다(game_service: GameService):
     result = game_service.process_guess(50)
     assert result == GuessResult.CORRECT
     assert game_service.current_game.attempts == 1   
