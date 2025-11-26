@@ -29,4 +29,20 @@ def test_process_guess_는_추측결과를_정확히_반환한다():
     game_service.new_game()
     result = game_service.process_guess(30)
     assert result == GuessResult.TOO_LOW
-    assert game_service.current_game.attempts == 1 
+    assert game_service.current_game.attempts == 1    
+    
+def test_process_guess_는_정답보다_높은값을_축측하면_TOO_HIGH_를_반환한다():
+    fake_generator = FakeRandomGenerator(fixed_number=50)
+    game_service = GameService(generator=fake_generator)
+    game_service.new_game()
+    result = game_service.process_guess(70)
+    assert result == GuessResult.TOO_HIGH
+    assert game_service.current_game.attempts == 1   
+    
+def test_process_guess_는_정답을_맞히면_CORRECT_를_반환한다():
+    fake_generator = FakeRandomGenerator(fixed_number=50)
+    game_service = GameService(generator=fake_generator)
+    game_service.new_game()
+    result = game_service.process_guess(50)
+    assert result == GuessResult.CORRECT
+    assert game_service.current_game.attempts == 1   

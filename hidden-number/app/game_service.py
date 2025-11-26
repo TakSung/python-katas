@@ -12,4 +12,11 @@ class GameService:
     
     def new_game(self) -> Game:
         secret_number = self._generator.generate()
-        return Game(secret_number= secret_number)
+        self.current_game = Game(secret_number= secret_number)
+        return self.current_game
+    
+    def process_guess(self, guessed_number):
+        return self.current_game.guess(guessed_number)
+        
+        
+        
