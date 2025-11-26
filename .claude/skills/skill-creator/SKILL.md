@@ -103,6 +103,37 @@ description: Excel 스프레드시트를 분석하고 피벗 테이블과 차트
 - Git 명령어: `git -c core.quotepath=false`
 - 파일 인코딩: UTF-8 사용
 
+#### 스킬 참조 패턴 (IMPORTANT)
+
+에이전트 파일에서 스킬을 참조할 때 **@ 기호를 사용하지 마세요**.
+
+**이유**: `@` 기호는 파일 내용을 즉시 로드하여 프롬프트에 포함시킵니다. 이는 불필요한 컨텍스트 낭비를 야기합니다.
+
+**잘못된 패턴 (❌)**:
+```text
+# AVAILABLE SKILLS
+
+(at)../../.claude/skills/catchup/SKILL.md
+(at)../../.claude/skills/skill-creator/SKILL.md
+```
+→ @ 기호로 인해 스킬 파일 전체가 즉시 프롬프트에 로드되어 컨텍스트 낭비
+
+Note: (at)을 @로 바꿔서 사용하면 안 됩니다!
+
+**올바른 패턴 (✅)**:
+```markdown
+# AVAILABLE SKILLS
+
+../../.claude/skills/catchup/SKILL.md
+../../.claude/skills/skill-creator/SKILL.md
+```
+→ 경로만 참조 정보로 표시, 필요할 때만 로드
+
+**적용 원칙**:
+- 에이전트 파일(`agent/sub-agent/*.md`)에서 스킬 경로를 명시할 때는 `@` 없이 경로만 작성
+- 참조 정보로만 활용하고, Claude가 필요 시 스킬을 자동으로 발견하도록 함
+- description의 트리거 키워드로 스킬 발견을 유도
+
 ### 5. 스킬 검증 체크리스트
 
 새 스킬을 생성한 후 다음을 확인합니다:
