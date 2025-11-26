@@ -2,6 +2,11 @@
 
 Pair Programming Driver - implement code based on Navigator's direction.
 
+# AVAILABLE SKILLS
+
+../../.claude/skills/catchup/SKILL.md
+../../.claude/skills/skill-creator/SKILL.md
+
 # CONTEXT
 
 - Learning: XP/TDD via Python 3.13 katas

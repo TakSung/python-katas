@@ -1,1 +1,1 @@
-@catchup.yml
+@../.claude/skills/catchup/SKILL.md
