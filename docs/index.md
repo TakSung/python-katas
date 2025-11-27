@@ -8,11 +8,31 @@ Guide selection based on your current task or learning goal.
 
 | Document | Purpose | When to Read |
 |----------|---------|--------------|
-| **command-reference.md** | Gemini, Python, Git 명령어 모음 | 명령어 문법 필요, 트러블슈팅 |
-| **agent-dialogue-guide.md** | 에이전트와 효과적으로 대화하는 방법 | TDD 학습 시작, 에이전트 활용법 |
+| **navigator-usage-guide.md** | Navigator 사용법 (드라이버 관점) | Navigator와 페어 프로그래밍 시작 |
 | **TDD-guide.md** | TDD methodology for beginners | Learning TDD concepts and principles |
 | **directory-structure.md** | Project & Clean Architecture layout | Setting up kata, understanding layers |
+| **agent-dialogue-guide.md** | 에이전트와 효과적으로 대화하는 방법 | TDD 학습 시작, 에이전트 활용법 |
+| **command-reference.md** | Gemini, Python, Git 명령어 모음 | 명령어 문법 필요, 트러블슈팅 |
 | **contributing.md** | Contribution guidelines | Adding agents/skills, documentation rules |
+
+---
+
+## Navigator Usage Guide
+
+**File**: `docs/navigator-usage-guide.md` (Korean)
+
+**Contains**:
+- How to communicate with Navigator (driver perspective)
+- 8 common question patterns with examples
+- Communication tips (good vs bad questions)
+- Troubleshooting guide (ImportError, test failures, etc.)
+- Learning workflow (RED-GREEN-REFACTOR)
+
+**Read this when**:
+- First time using Navigator
+- Want to know what questions to ask
+- Stuck and don't know how to ask for help
+- Want to see real conversation examples
 
 ---
 
@@ -120,9 +140,9 @@ Guide selection based on your current task or learning goal.
 ## Selection Guide by Situation
 
 ### I'm new to this project
-1. Start: `docs/TDD-guide.md` (understand methodology)
-2. Then: `docs/directory-structure.md` (understand structure)
-3. Keep handy: `docs/scenario-examples.md` (for command reference)
+1. Start: `docs/navigator-usage-guide.md` (Navigator 사용법 익히기)
+2. Learn: `docs/TDD-guide.md` (TDD 방법론 이해)
+3. Then: `docs/directory-structure.md` (프로젝트 구조 파악)
 
 ### I want to start a new kata
 1. Read: `docs/directory-structure.md` (Clean Arch layers)
@@ -130,7 +150,7 @@ Guide selection based on your current task or learning goal.
 3. Use: `docs/TDD-guide.md` (for development flow)
 
 ### I'm stuck / encountering errors
-1. Check: `docs/scenario-examples.md` (troubleshooting section)
+1. Check: `docs/navigator-usage-guide.md` (Troubleshooting 섹션)
 2. If unclear: Use Coach agent (`코치가 되어 상황 설명`)
 3. For imports: `docs/directory-structure.md` (import strategy)
 
@@ -145,9 +165,9 @@ Guide selection based on your current task or learning goal.
 3. Usage examples: `.claude/skills/[skill-name]/usage-guide.md`
 
 ### I need command syntax
-1. Go to: `docs/scenario-examples.md` (quick reference cards)
-2. For skills: `agent/skills/index.md` (skill commands)
-3. For Git: `docs/scenario-examples.md` (Git workflow section)
+1. Go to: `docs/command-reference.md` (quick reference cards)
+2. Ask Navigator: `docs/navigator-usage-guide.md` (질문 패턴 참고)
+3. For skills: `agent/skills/index.md` (skill commands)
 
 ---
 
@@ -156,9 +176,11 @@ Guide selection based on your current task or learning goal.
 ```
 docs/
 ├── index.md                  # This file - navigation hub
+├── navigator-usage-guide.md  # Navigator 사용법 (드라이버 관점, Korean)
 ├── TDD-guide.md              # TDD methodology for beginners
 ├── directory-structure.md    # Project & Clean Arch layout
-├── scenario-examples.md      # Usage scenarios & troubleshooting
+├── agent-dialogue-guide.md   # 에이전트 대화 가이드 (Korean)
+├── command-reference.md      # 명령어 레퍼런스 (Korean)
 └── contributing.md           # Contribution guidelines
 
 agent/
