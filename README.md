@@ -3,49 +3,14 @@
 파이썬으로 진행하는 코딩 카타 프로젝트입니다.
 실전 프로그래밍 실력을 향상시키기 위해 Clean Architecture와 XP 프로그래밍 방식으로 학습합니다.
 
-## 명령어 모음
-```bash
-# gemini 실행 관련
-nvm use 20.19.0 
-gemini --version
-npm update -g @google-cloud/gemini-cli
+## 실전 가이드
 
-# gemini 사용패턴
-gemini
-### 들어간 이후에
-###### 1
-@agent/sub-agent/navigator.md 네비게이터가 되서 나와 같이 페어코딩 해줘. 알았으면 네라고 해줘.
-###### 2 : hidden-number 진행할때.
-hidden-number/README.md 를 참고하여 지금 내가 무엇을 해야할지 알려줘
-###### 구현완료한 뒤에 : 
-다음 작업은 무엇을 할까? (agent/skills/* 를 사용하여 현제 상황을 파악)
-###### 문법을 몰라서 작성이 힘들때:
-~~~ 문법에 대해 잘 몰라 설명해줘.
-###### 단어를 몰라서 무슨 말인지 잘 모를때:
-~~~~가 무엇인지 설명해줘.
-###### 방향성을 제시해줬지만 무엇부터 시작할지 막막할 때 :
-무엇을 해야할지 좀더 자세히 설명해줘.
-###### 테스트를 구현해보자고 방향성만 말해줬을때:
-테스트 함수 이름은 어떻게 지으면 좋을지 제안해줘.
-###### UI 파일 등 실행하기 어려운 파일을 어떻게 실행할지 모를때:
-~~~ 파일 작성했는데 어떻게 실행할수 있을까? 방법 알려줘.
-###### 오류가 왜 났는지 물어보고 싶을때.
-(오류난 명령어 주면서)~~~~ 이거 실행해보고, 왜 오류 났는지 분석해서 설명해줘.
+상황별 대응 방법과 명령어 예시는 다음 문서를 참고하세요:
 
-# 파이썬 실행 명령어
-pytest # 구현 이후 테스트 케이스 실행
-
-# git 명령어
-
-### checkout 명령어
-git fetch --all
-git checkout -b wu origin/wu # 새로 브랜치를 만들면서 이동할건데, 원격저장소에 wu와 매칭된다.
-
-### 변경사항 업데이트
-git fetch --all
-git pull
-git merge origin/main
-```
+- **TDD 워크플로우**: `docs/TDD-guide.md` - TDD 사이클과 에이전트 전환 가이드
+- **시나리오별 예시**: `docs/scenario-examples.md` - Gemini/Claude 사용법, Git 워크플로우, 트러블슈팅
+- **AI 에이전트 시스템**: `AGENTS.md` - Navigator, Driver, Reviewer, Coach 활용법
+- **스킬 사용법**: `agent/skills/index.md` - catchup, python-runner, skill-creator 스킬 레퍼런스
 
 ## 기술 스택
 
@@ -59,35 +24,7 @@ git merge origin/main
 
 ## 프로젝트 구조
 
-```
-python-katas/
-├── .python-version           # Python 버전 고정 (3.13)
-├── pyproject.toml            # 프로젝트 설정 및 의존성
-├── uv.lock                   # 의존성 잠금 파일
-├── .venv/                    # 가상 환경
-│
-└── {kata-name}/              # 각 카타별 디렉토리
-    ├── README.md             # 카타 설명서
-    ├── main.py               # 진입점 (의존성 조립)
-    │
-    ├── domain/               # 도메인 계층 (순수 비즈니스 로직)
-    │   └── *.py              # 엔티티, 값 객체
-    │
-    ├── app/                  # 애플리케이션 계층 (유즈케이스)
-    │   └── *.py              # 서비스, 비즈니스 로직
-    │
-    ├── infra/                # 인프라 계층 (외부 의존성)
-    │   └── *.py              # 구체적 구현체
-    │
-    ├── ui/                   # UI 계층
-    │   └── *.py              # Tkinter GUI
-    │
-    ├── tests/                # 테스트
-    │   └── test_*.py         # pytest 단위 테스트
-    │
-    └── docs/                 # 문서
-        └── architecture.md   # 아키텍처 설계 문서
-```
+프로젝트 전체 구조와 Clean Architecture 기반 카타 구조는 `docs/directory-structure.md`를 참고하세요.
 
 ### Clean Architecture 원칙
 
@@ -95,6 +32,9 @@ python-katas/
 - **의존성 역전 (DIP)**: 고수준 모듈이 저수준 모듈에 의존하지 않음
 - **계층 분리**: 각 계층은 명확한 책임과 역할을 가짐
 - **불변성**: dataclass의 `frozen=True`로 엔티티 불변성 보장
+- **절대 경로 임포트**: `from kata-name.layer.module import Class` 형식 사용
+
+자세한 내용: `docs/directory-structure.md`, `hidden-number/docs/architecture.md`
 
 ## 환경 설정
 

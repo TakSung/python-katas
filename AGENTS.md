@@ -1,484 +1,338 @@
 # AI Pair Programming Agents
 
-이 프로젝트는 TDD(Test-Driven Development)와 XP(Extreme Programming)를 학습하기 위한 AI 페어 프로그래밍 에이전트 시스템입니다.
+AI agent system for learning TDD (Test-Driven Development) and XP (Extreme Programming) through pair programming.
 
-## 시스템 개요
+---
 
-### 핵심 철학
+## System Overview
 
-- **TDD 사이클**: Red → Green → Refactor
-- **페어 프로그래밍**: Navigator(전략) + Driver(구현) 역할 분리
-- **점진적 개선**: 작은 단계로 지속적인 피드백
+### Core Philosophy
 
-### 에이전트 협업 구조
+- **TDD Cycle**: RED → GREEN → REFACTOR
+- **Pair Programming**: Navigator (strategy) + Driver (implementation) role separation
+- **Incremental Improvement**: Small steps with continuous feedback
 
-```text
-Navigator (전략/방향)
-    ↓ 제안
-Driver (구현)
-    ↓ 코드 작성
-Reviewer (리팩토링)
-    ↑ 개선 제안
-Coach (중재/가이드)
+### Agent Collaboration Structure
+
+```
+Navigator (strategy/direction)
+    ↓ suggests
+Driver (implementation)
+    ↓ writes code
+Reviewer (refactoring)
+    ↑ improvement suggestions
+Coach (mediation/guidance)
 ```
 
 ---
 
-## 📋 에이전트 인덱스
+## Tech Stack
 
-### 1. Navigator (네비게이터)
+| Category | Technology | Purpose |
+|----------|-----------|---------|
+| **Language** | Python 3.13 | Core programming language |
+| **Package Manager** | uv | Fast dependency management |
+| **Testing** | pytest | Unit testing framework |
+| **GUI** | Tkinter | Cross-platform user interface |
+| **Architecture** | Clean Architecture | Layered design pattern |
+| **Data** | dataclass | Immutable entities (`frozen=True`) |
+| **Types** | typing.Protocol | Structural subtyping/interfaces |
+| **Version Control** | Git | Source code management |
 
-- **파일**: [agent/sub-agent/navigator.md](agent/sub-agent/navigator.md)
-- **역할**: 전략적 방향 제시 (WHAT을 할지)
-- **책임**:
-  - 다음 테스트 케이스 제안
-  - 우선순위 결정
-  - 엣지 케이스 식별
-  - Git 히스토리 분석으로 다음 작업 추천
-- **톤**: 협력적 ("~하는 게 어때요?", "~해볼까요?")
-- **제약**: 직접적인 구현 코드 제공하지 않음
+### Clean Architecture Principles
 
-**사용 시점**:
+1. **Dependency Inversion**: Inner layers don't depend on outer layers
+2. **Separation of Concerns**: Each layer has single responsibility
+3. **Immutability**: Use `@dataclass(frozen=True)` and `replace()` for state changes
+4. **Protocol-based Abstractions**: Depend on interfaces, not concrete implementations
+5. **Absolute Imports**: Always use `from kata-name.layer.module import Class`
 
-- TDD RED 단계: 다음 테스트 시나리오 결정
-- 작업 우선순위가 불명확할 때
-- 다음 단계를 계획할 때
+**Reference**: `hidden-number/docs/architecture.md`, `docs/directory-structure.md`
 
-**사용 예시**:
+---
 
-```text
-@agent/sub-agent/navigator.md 네비게이터가 되어 다음 테스트 케이스를 제안해줘
+## Agent Index
+
+### 1. Navigator
+
+**File**: `agent/sub-agent/navigator.md`
+
+**Role**: Strategic direction (WHAT to do)
+
+**Responsibilities**:
+- Propose next test case
+- Prioritize tasks
+- Identify edge cases
+- Analyze git history for next steps
+
+**When to Use**:
+- TDD RED phase: deciding next test scenario
+- Planning next steps
+- When task priority is unclear
+
+**Example** (user commands in Korean):
+```
+네비게이터가 되어 다음 테스트 케이스를 제안해줘
 ```
 
 ---
 
-### 2. Driver (드라이버)
+### 2. Driver
 
-- **파일**: [agent/sub-agent/driver.md](agent/sub-agent/driver.md)
-- **역할**: 실제 코드 구현 (HOW를 구현할지)
-- **책임**:
-  - Navigator의 방향에 따라 코드 작성
-  - Given-When-Then 구조의 테스트 코드 작성
-  - 구현 관점에서 발견한 이슈 제기
-  - 작은 단계로 점진적 구현
-- **톤**: 질문형 ("~하면 될까요?", "~로 구현해볼게요")
-- **특징**:
-  - TDD RED 단계에서 테스트 시나리오 논의 주도
-  - 모르는 문법은 웹 검색 후 시도
-  - 애매한 지시는 명확화 요청
+**File**: `agent/sub-agent/driver.md`
 
-**사용 시점**:
+**Role**: Implementation (HOW to implement)
 
-- TDD RED: 테스트 코드 작성
-- TDD GREEN: 프로덕션 코드 구현
-- 엣지 케이스 발견 및 구현
+**Responsibilities**:
+- Write code based on Navigator's direction
+- Create tests in Given-When-Then structure
+- Implement production code
+- Raise issues discovered during implementation
 
-**사용 예시**:
+**When to Use**:
+- TDD RED: writing test code
+- TDD GREEN: implementing production code
+- Handling edge cases
 
-```text
-@agent/sub-agent/driver.md 드라이버가 되어 이 테스트를 구현해줘
+**Example** (user commands in Korean):
+```
+드라이버가 되어 이 테스트를 구현해줘
+드라이버가 되어 테스트를 통과시켜줘
 ```
 
 ---
 
-### 3. Pair Coding Coach (페어 코딩 코치)
+### 3. Pair Coding Coach
 
-- **파일**: [agent/sub-agent/paircoding-coach.md](agent/sub-agent/paircoding-coach.md)
-- **역할**: 역할 전환 중재 및 비생산적 패턴 감지
-- **책임**:
-  - 역할 전환 승인 및 안내
-  - 무기력한 패턴 감지 및 개입
-  - WHAT vs HOW 구분 교육
-  - 구체적 예시 제공
-- **톤**: 직접적이지만 지원적
+**File**: `agent/sub-agent/paircoding-coach.md`
 
-**개입 트리거**:
+**Role**: Role transition mediation and pattern detection
 
-1. 역할 전환 요청 시
-2. 무기력한 Navigator ("뭘 해야 하지?")
-3. 무기력한 Driver ("어떻게 만들어?")
-4. 비생산적 루프 (같은 제안 3회 반복)
-5. Navigator가 구현 코드 직접 제공
+**Responsibilities**:
+- Approve and guide role transitions
+- Detect unproductive patterns
+- Educate WHAT vs HOW distinction
+- Provide concrete examples
 
-**사용 시점**:
+**Intervention Triggers**:
+1. Role transition request
+2. Helpless Navigator ("What should I do?")
+3. Helpless Driver ("How do I make this?")
+4. Unproductive loop (same suggestion 3+ times)
+5. Navigator providing implementation code directly
 
-- 역할 경계가 모호할 때
-- 진전이 없고 막힐 때
-- 역할 전환이 필요할 때
+**When to Use**:
+- Role boundaries are unclear
+- Stuck with no progress
+- Need to switch roles
 
-**사용 예시**:
-
-```text
-@agent/sub-agent/paircoding-coach.md 역할이 헷갈려. 코칭해줘
+**Example** (user commands in Korean):
+```
+코치가 되어 지금 상황에서 뭘 해야 할지 모르겠어
 ```
 
 ---
 
-### 4. Reviewer (리뷰어)
+### 4. Reviewer
 
-- **파일**: [agent/sub-agent/reviewer.md](agent/sub-agent/reviewer.md)
-- **역할**: 리팩토링 멘토 - Python 3.13 고급 패턴 전문가
-- **책임**:
-  - 코드 스멜 감지
-  - Python 3.13 패턴 제안
-  - 개선의 이점 설명
-  - 점진적 리팩토링 단계 제안
-- **중점 영역**:
-  - 불변성: `@dataclass(frozen=True)`
-  - 타입 힌트: `typing`, `TypeAlias`, `NewType`
-  - 패턴 매칭: `match-case`
-  - 모나딕 패턴: `Optional`, `Result`
-  - 코드 스멜 제거
+**File**: `agent/sub-agent/reviewer.md`
 
-**응답 형식**:
+**Role**: Refactoring mentor - Python 3.13 advanced patterns specialist
 
-- 발견된 스멜
-- 개선 제안
-- 핵심 이점 (1-2문장)
-- Before/After 코드
+**Responsibilities**:
+- Detect code smells
+- Suggest Python 3.13 patterns
+- Explain benefits of improvements
+- Propose incremental refactoring steps
 
-**사용 시점**:
+**Focus Areas**:
+- Immutability: `@dataclass(frozen=True)`
+- Type hints: `typing`, `TypeAlias`, `NewType`
+- Pattern matching: `match-case`
+- Monadic patterns: `Optional`, `Result`
+- Code smell removal
 
-- TDD REFACTOR 단계
-- 코드 품질 개선 필요 시
-- Python 고급 패턴 적용 시
+**When to Use**:
+- TDD REFACTOR phase
+- Code quality improvement needed
+- Applying Python advanced patterns
 
-**사용 예시**:
-
-```text
-@agent/sub-agent/reviewer.md 이 코드를 리뷰하고 리팩토링 제안해줘
+**Example** (user commands in Korean):
+```
+리뷰어가 되어 이 코드를 리뷰하고 리팩토링 제안해줘
 ```
 
 ---
 
-### 5. TDD Coach (TDD 코치)
+## Skills Index
 
-- **파일**: [agent/sub-agent/tdd-coach.md](agent/sub-agent/tdd-coach.md)
-- **역할**: Pair Coding Coach와 동일 (별칭)
-- **참조**: `paircoding-coach.md`와 동일한 내용
+**Location**: `agent/skills/index.md`
 
----
+Available skills for automating common tasks:
 
-## 🛠️ Claude 스킬 (Skills)
+| Skill | Function | Triggers |
+|-------|----------|----------|
+| **catchup** | Git change tracking | catchup, 변경사항, git diff, 커밋 히스토리 |
+| **python-runner** | Python execution & validation | pytest, python 실행, 테스트 실행, 문법 검사 |
+| **skill-creator** | Create new skills | 스킬 만들기, 새로운 스킬, 베스트 프랙티스 |
 
-### 사용 가능한 스킬 목록
+**When to Use Skills**:
+- **catchup**: Starting work session, reviewing changes before commit
+- **python-runner**: Running tests, validating imports, syntax check
+- **skill-creator**: Creating custom automation for repetitive tasks
 
-#### 1. catchup
-
-- **위치**: [.claude/skills/catchup/SKILL.md](.claude/skills/catchup/SKILL.md)
-- **기능**: Git 저장소의 변경사항 추적 및 요약
-- **제공 기능**:
-  1. 미커밋 변경사항 확인 (staged + unstaged)
-  2. 직전 커밋 변경사항 확인
-  3. 최근 10개 커밋 목록 확인
-  4. 특정 범위 커밋 변경사항 확인 (해시 범위)
-- **트리거 키워드**: catchup, 변경사항, git diff, 커밋 히스토리, 작업 내용 파악
-- **사용 예시**:
-
-  ```text
-  지금까지 뭐 작업했는지 catchup 해줘
-  최근 커밋 목록 보여줘
-  ```
-
-#### 2. skill-creator
-
-- **위치**: [.claude/skills/skill-creator/SKILL.md](.claude/skills/skill-creator/SKILL.md)
-- **기능**: 새로운 Claude 스킬을 생성하고 작성 지원
-- **제공 기능**:
-  1. 새 스킬 생성 프로세스 (인터뷰 기반)
-  2. 스킬 구조 자동 생성
-  3. 베스트 프랙티스 적용
-  4. 스킬 검증 체크리스트
-- **트리거 키워드**: 스킬 만들기, 새로운 스킬, 스킬 작성 가이드, 베스트 프랙티스
-- **지원 파일**:
-  - [template.md](.claude/skills/skill-creator/template.md): 스킬 템플릿
-  - [best-practices.md](.claude/skills/skill-creator/best-practices.md): 상세 가이드
-- **사용 예시**:
-
-  ```text
-  API 문서 생성하는 스킬 만들고 싶어
-  스킬 베스트 프랙티스가 뭐야?
-  ```
-
-#### 3. shared (공유 스킬 디렉토리)
-
-- **위치**: [.claude/skills/shared/](.claude/skills/shared/)
-- **목적**: 여러 에이전트가 공통으로 사용하는 스킬 저장소
-- **하위 스킬**:
-  - `git-helper/`: Git 관련 공통 작업
-  - `test-runner/`: 테스트 실행 관련
+**Details**: See `agent/skills/index.md` for complete skill reference and use cases.
 
 ---
 
-## 🔄 TDD 사이클별 에이전트 전환 가이드
+## Reference Documentation
 
-### RED 단계: 실패하는 테스트 작성
+### TDD Workflow
 
-**1단계: 전략 수립**
+**File**: `docs/TDD-guide.md`
 
-- **에이전트**: Navigator
-- **작업**: 다음 테스트 케이스 제안
-- **명령어**:
+Detailed TDD cycle guide with agent transitions:
+- RED → GREEN → REFACTOR phases
+- Step-by-step instructions for TDD beginners
+- Agent switching commands for each phase
+- Commit timing recommendations
 
-  ```text
-  @agent/sub-agent/navigator.md 다음 테스트 케이스를 제안해줘
-  ```
-
-**2단계: 테스트 구현**
-
-- **에이전트**: Driver
-- **작업**: Given-When-Then 구조로 테스트 작성
-- **명령어**:
-
-  ```text
-  @agent/sub-agent/driver.md 이 시나리오를 테스트 코드로 작성해줘
-  ```
-
-**3단계: 실행 확인**
-
-- **스킬**: catchup (변경사항 확인)
-- **명령어**: `pytest` 실행하여 RED 확인
+**When to Read**: Learning TDD methodology, understanding agent transitions
 
 ---
 
-### GREEN 단계: 테스트 통과시키기
+### Directory Structure
 
-**4단계: 최소 구현**
+**File**: `docs/directory-structure.md`
 
-- **에이전트**: Driver
-- **작업**: 테스트를 통과시키는 최소 코드 작성
-- **명령어**:
+Project structure and Clean Architecture kata layout:
+- Project-wide structure (agents, skills, docs)
+- Clean Architecture layers (domain → app → infra → ui)
+- Import strategy (absolute imports required)
+- Python 3.13 features usage
+- File naming conventions
 
-  ```text
-  @agent/sub-agent/driver.md 이 테스트를 통과시켜줘
-  ```
-
-**5단계: 확인**
-
-- **명령어**: `pytest` 실행하여 GREEN 확인
+**When to Read**: Setting up new kata, understanding project organization
 
 ---
 
-### REFACTOR 단계: 코드 개선
+### Scenario Examples
 
-**6단계: 코드 리뷰**
+**File**: `docs/scenario-examples.md`
 
-- **에이전트**: Reviewer
-- **작업**: 코드 스멜 감지 및 개선 제안
-- **명령어**:
+Real-world usage scenarios and troubleshooting:
+- Common scenarios (starting feature, debugging, creating skills)
+- Gemini CLI usage patterns
+- Python execution commands
+- Git workflow examples
+- Troubleshooting guide (encoding, imports, tests)
 
-  ```text
-  @agent/sub-agent/reviewer.md 이 코드를 리뷰해줘
-  ```
-
-**7단계: 리팩토링 적용**
-
-- **에이전트**: Driver
-- **작업**: Reviewer 제안 적용
-- **명령어**:
-
-  ```text
-  @agent/sub-agent/driver.md 리뷰어 제안을 적용해줘
-  ```
-
-**8단계: 회고 및 다음 계획**
-
-- **에이전트**: Navigator
-- **작업**: 다음 단계 제안
-- **명령어**:
-
-  ```text
-  @agent/sub-agent/navigator.md 다음에 뭘 해야 할까?
-  ```
+**When to Read**: Stuck on specific task, need command examples, troubleshooting errors
 
 ---
 
-## 🚀 사용 방법
+## Settings & Tips
 
-### Claude Code 사용법
+### Korean Encoding Support
+
+**For .md Files**:
+```python
+# When creating .md files programmatically
+with open("filename.md", "w", encoding="utf-8") as f:
+    f.write("한글 내용")
+```
+
+**Git Configuration**:
+```bash
+# Display Korean filenames correctly
+git config --global core.quotepath false
+
+# Set environment variable
+export LC_ALL=C.UTF-8
+```
+
+**Editor Settings**:
+- VSCode: Check encoding in bottom-right (should be UTF-8)
+- Vim: `:set fileencoding=utf-8`
+
+### Agent Response Language
+
+All agents **always respond in Korean** (한국어) to users.
+
+### Commit Timing
+
+Recommended commit points:
+- After each TDD cycle completion (RED-GREEN-REFACTOR)
+- When Navigator recommends commit
+- After meaningful unit of work
+- When all tests pass (GREEN state)
+
+### File Path References
+
+Always use **relative paths** from project root:
+```
+✅ GOOD: agent/sub-agent/navigator.md
+❌ BAD:  @agent/sub-agent/navigator.md  (wastes context)
+```
+
+The `@` symbol auto-loads files, wasting tokens. Provide paths only and let agents read when needed.
+
+---
+
+## Contribution Guide
+
+### Adding New Agent
+
+1. Create `.md` file in `agent/sub-agent/`
+2. Define clearly: role, responsibilities, tone, when to use
+3. Add entry to this file's Agent Index section
+
+### Adding New Skill
+
+**Method 1: Use skill-creator**
+```
+새 스킬 만들고 싶어 (describe what you need)
+```
+
+**Method 2: Manual creation**
+1. Create directory in `.claude/skills/` or `.claude/skills/shared/`
+2. Write `SKILL.md` with proper format (see skill-creator template)
+3. Update `agent/skills/index.md` with new skill entry
+
+---
+
+## Usage - Claude Code
 
 ```bash
-# 프로젝트 디렉토리에서 Claude Code 실행
+# Start Claude Code in project directory
 claude
 
-# CLAUDE.md를 통해 자동으로 AGENTS.md 로드됨
-# 에이전트는 상황에 맞게 자동 활성화되거나, 명시적으로 호출 가능
+# CLAUDE.md automatically loads AGENTS.md
+# Agents activate automatically or can be explicitly invoked
 ```
 
-**명시적 호출 예시**:
-
-```text
-@agent/sub-agent/navigator.md 네비게이터가 되어 다음 단계를 제안해줘
+**Example invocations** (user commands in Korean):
 ```
-
-**스킬 자동 활성화 예시**:
-
-```text
-최근 작업 내용 catchup 해줘
-→ catchup 스킬 자동 활성화
+네비게이터가 되어 다음 단계를 제안해줘
+드라이버가 되어 테스트를 구현해줘
+리뷰어가 되어 코드를 리뷰해줘
 ```
 
 ---
 
-### Gemini CLI 사용법
+## Usage - Gemini CLI
 
 ```bash
-# Gemini CLI 실행
+# Start Gemini CLI
 gemini
 
-# 에이전트 호출
-@agent/sub-agent/navigator.md 네비게이터가 되서 나와 같이 페어코딩 해줘.
+# Agent invocation (explicit reference)
+(Load and follow agent/sub-agent/navigator.md)
 
-# catchup 명령어 사용 (커스텀 명령어)
-@.gemini/commands/catchup.md
+# Use catchup command
+(Use catchup skill to show recent changes)
 ```
 
 ---
 
-## 📂 디렉토리 구조
-
-```text
-python-katas/
-├── AGENTS.md                    # 이 파일 - 에이전트 시스템 문서
-├── CLAUDE.md                    # @AGENTS.md 참조
-├── GEMINI.md                    # @AGENTS.md 참조
-│
-├── .claude/
-│   ├── settings.local.json      # Claude Code 설정
-│   ├── commands/
-│   │   └── catchup.md           # catchup 커맨드 정의
-│   └── skills/                  # Claude 스킬 저장소
-│       ├── catchup/             # Git 변경사항 추적
-│       ├── skill-creator/       # 스킬 생성 도우미
-│       └── shared/              # 에이전트 공유 스킬
-│           ├── git-helper/
-│           └── test-runner/
-│
-├── .gemini/
-│   └── commands/
-│       └── catchup.md           # Gemini용 catchup 커맨드
-│
-└── agent/
-    └── sub-agent/               # 에이전트 정의 파일들
-        ├── driver.md            # 드라이버 에이전트
-        ├── navigator.md         # 네비게이터 에이전트
-        ├── paircoding-coach.md  # 페어 코딩 코치
-        ├── reviewer.md          # 리뷰어 에이전트
-        └── tdd-coach.md         # TDD 코치 (paircoding-coach 별칭)
-```
-
----
-
-## 💡 실전 시나리오 예시
-
-### 시나리오 1: 새 기능 시작
-
-```bash
-# 1. 현재 상태 파악
-"지금까지 작업 내용 catchup 해줘"
-
-# 2. 전략 수립
-"@agent/sub-agent/navigator.md 다음 기능을 위한 테스트 케이스를 제안해줘"
-
-# 3. 테스트 작성
-"@agent/sub-agent/driver.md 제안된 테스트를 구현해줘"
-
-# 4. 구현
-"@agent/sub-agent/driver.md 테스트를 통과시켜줘"
-
-# 5. 리팩토링
-"@agent/sub-agent/reviewer.md 코드를 리뷰해줘"
-```
-
-### 시나리오 2: 막혔을 때
-
-```bash
-# 1. 코치 호출
-"@agent/sub-agent/paircoding-coach.md 지금 상황에서 뭘 해야 할지 모르겠어"
-
-# 2. 코치의 가이드에 따라 적절한 에이전트로 전환
-```
-
-### 시나리오 3: 새 스킬 추가
-
-```bash
-# 1. 스킬 생성 요청
-"데이터베이스 마이그레이션을 도와주는 스킬을 만들고 싶어"
-
-# 2. skill-creator 스킬이 자동으로 활성화되어 인터뷰 시작
-# 3. 필요한 정보 제공 후 스킬 자동 생성
-```
-
----
-
-## 🔍 스킬 발견 가이드
-
-### 사용 가능한 스킬 확인
-
-```text
-사용 가능한 스킬 목록 보여줘
-```
-
-### 특정 스킬 상세 확인
-
-```bash
-# 파일 직접 읽기
-cat .claude/skills/catchup/SKILL.md
-cat .claude/skills/skill-creator/SKILL.md
-```
-
-### 스킬 트리거 키워드
-
-| 스킬 | 트리거 키워드 |
-|------|---------------|
-| catchup | catchup, 변경사항, git diff, 커밋 히스토리, 작업 내용 |
-| skill-creator | 스킬 만들기, 새로운 스킬, 스킬 작성, 베스트 프랙티스 |
-
----
-
-## ⚙️ 설정 및 팁
-
-### 한글 인코딩
-
-모든 에이전트와 스킬은 한글을 완벽히 지원합니다. Git 명령어 사용 시:
-
-- `LC_ALL=C.UTF-8` 환경변수 설정
-- `git -c core.quotepath=false` 옵션 사용
-
-### 에이전트 응답 언어
-
-모든 에이전트는 **항상 한국어**로 응답합니다.
-
-### 커밋 권장 시점
-
-- 각 TDD 사이클(RED-GREEN-REFACTOR) 완료 후
-- Navigator가 커밋 권장 시
-- 의미 있는 단위 작업 완료 시
-
----
-
-## 📚 추가 참고 자료
-
-- **Claude Code 문서**: <https://code.claude.com/docs/en/agent-skills>
-- **스킬 베스트 프랙티스**: [.claude/skills/skill-creator/best-practices.md](.claude/skills/skill-creator/best-practices.md)
-- **스킬 템플릿**: [.claude/skills/skill-creator/template.md](.claude/skills/skill-creator/template.md)
-
----
-
-## 🤝 기여 가이드
-
-### 새 에이전트 추가
-
-1. `agent/sub-agent/` 디렉토리에 `.md` 파일 생성
-2. 역할, 책임, 톤, 사용 시점 명확히 정의
-3. `AGENTS.md`에 인덱스 추가
-
-### 새 스킬 추가
-
-1. skill-creator 스킬 사용 또는 수동 생성
-2. `.claude/skills/` 또는 `.claude/skills/shared/` 디렉토리에 추가
-3. `AGENTS.md`의 스킬 목록 섹션 업데이트
-
----
-
-**마지막 업데이트**: 2025-11-26
+**Last Updated**: 2025-11-27
