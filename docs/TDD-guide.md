@@ -180,28 +180,28 @@ PASSED tests/test_game_service.py::test_guess_higher_than_answer
 
 **예시 응답**:
 ```
-발견된 스멜:
-1. 조건문이 if-elif-else로 확장될 가능성
-   → match-case 패턴으로 개선 가능
+    발견된 스멜:
+    1. 조건문이 if-elif-else로 확장될 가능성
+    → match-case 패턴으로 개선 가능
 
-개선 제안:
-```python
-def make_guess(self, game: Game, guess: int) -> GuessResult:
-    match guess:
-        case g if g > game.answer:
-            message = "Too High"
-        case g if g < game.answer:
-            message = "Too Low"
-        case _:
-            message = "Correct"
+    개선 제안:
+    ```python
+    def make_guess(self, game: Game, guess: int) -> GuessResult:
+        match guess:
+            case g if g > game.answer:
+                message = "Too High"
+            case g if g < game.answer:
+                message = "Too Low"
+            case _:
+                message = "Correct"
 
-    new_game = replace(game, attempts=game.attempts + 1)
-    return GuessResult(game=new_game, message=message)
-```
+        new_game = replace(game, attempts=game.attempts + 1)
+        return GuessResult(game=new_game, message=message)
+    ```
 
-핵심 이점:
-- 의도가 명확하고 확장 가능한 구조
-- Python 3.13 match-case 패턴 활용
+    핵심 이점:
+    - 의도가 명확하고 확장 가능한 구조
+    - Python 3.13 match-case 패턴 활용
 ```
 
 ---
