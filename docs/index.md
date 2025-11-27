@@ -8,9 +8,11 @@ Guide selection based on your current task or learning goal.
 
 | Document | Purpose | When to Read |
 |----------|---------|--------------|
-| **TDD-guide.md** | TDD methodology for beginners | Learning TDD, understanding RED-GREEN-REFACTOR |
+| **command-reference.md** | Gemini, Python, Git 명령어 모음 | 명령어 문법 필요, 트러블슈팅 |
+| **agent-dialogue-guide.md** | 에이전트와 효과적으로 대화하는 방법 | TDD 학습 시작, 에이전트 활용법 |
+| **TDD-guide.md** | TDD methodology for beginners | Learning TDD concepts and principles |
 | **directory-structure.md** | Project & Clean Architecture layout | Setting up kata, understanding layers |
-| **scenario-examples.md** | Real-world usage & troubleshooting | Stuck on task, need command examples |
+| **contributing.md** | Contribution guidelines | Adding agents/skills, documentation rules |
 
 ---
 
@@ -60,26 +62,40 @@ Guide selection based on your current task or learning goal.
 
 ---
 
-## Scenario Examples
+## Command Reference
 
-**File**: `docs/scenario-examples.md`
+**File**: `docs/command-reference.md`
 
-**Contains**:
-- Common scenarios (starting feature, debugging, creating skills)
-- Gemini CLI / Claude Code usage patterns
-- Python execution commands (`pytest`, `python -m`)
-- Git workflow examples (fetch, pull, merge, checkout)
-- Troubleshooting guide (encoding, imports, tests)
-- Quick reference cards (TDD, Git, Python commands)
+**Contains** (Korean):
+- Gemini CLI commands (setup, execution)
+- Python commands (pytest, execution, syntax check)
+- Git workflow commands (status, branch, commit)
+- Agent invocation commands
+- Skill usage commands
+- Troubleshooting (encoding, imports, tests)
 
 **Read this when**:
-- Stuck on specific task
-- Need command syntax examples
-- Troubleshooting errors (imports, encoding, tests)
-- Want quick command reference
-- Using Gemini CLI for first time
+- Need command syntax
+- Troubleshooting errors
+- Quick reference needed
 
-**Complements**: `agent/skills/index.md` (for skill-specific commands)
+---
+
+## Agent Dialogue Guide
+
+**File**: `docs/agent-dialogue-guide.md`
+
+**Contains** (Korean):
+- How to interact with each agent (Navigator, Driver, Reviewer, Coach)
+- TDD cycle dialogue flows (RED-GREEN-REFACTOR)
+- Learning-focused conversation patterns
+- Real dialogue examples
+- Session flow checklist
+
+**Read this when**:
+- Starting TDD learning
+- Want to learn effectively with agents
+- Unsure how to respond to agent suggestions
 
 ---
 

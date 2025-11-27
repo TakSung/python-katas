@@ -5,12 +5,22 @@
 
 ## 실전 가이드
 
-상황별 대응 방법과 명령어 예시는 다음 문서를 참고하세요:
+### 명령어 & 도구
 
-- **TDD 워크플로우**: `docs/TDD-guide.md` - TDD 사이클과 에이전트 전환 가이드
-- **시나리오별 예시**: `docs/scenario-examples.md` - Gemini/Claude 사용법, Git 워크플로우, 트러블슈팅
-- **AI 에이전트 시스템**: `AGENTS.md` - Navigator, Driver, Reviewer, Coach 활용법
-- **스킬 사용법**: `agent/skills/index.md` - catchup, python-runner, skill-creator 스킬 레퍼런스
+- **명령어 레퍼런스**: `docs/command-reference.md` - Gemini, Python, Git 명령어 모음
+- **AI 에이전트 시스템**: `AGENTS.md` - Navigator, Driver, Reviewer, Coach 개요
+- **스킬 레퍼런스**: `agent/skills/index.md` - catchup, python-runner, skill-creator
+
+### 학습 가이드
+
+- **TDD 방법론**: `docs/TDD-guide.md` - TDD 개념, 원칙, 사이클 이해
+- **에이전트 대화 가이드**: `docs/agent-dialogue-guide.md` - 에이전트와 효과적으로 학습하는 방법
+- **프로젝트 구조**: `docs/directory-structure.md` - Clean Architecture 개념 및 폴더 구조
+
+### 참고 문서
+
+- **전체 문서 인덱스**: `docs/index.md` - 상황별 문서 찾기
+- **기여 가이드**: `docs/contributing.md` - 에이전트/스킬 추가 방법
 
 ## 기술 스택
 
