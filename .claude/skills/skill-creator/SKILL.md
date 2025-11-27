@@ -134,6 +134,22 @@ Note: (at)을 @로 바꿔서 사용하면 안 됩니다!
 - 참조 정보로만 활용하고, Claude가 필요 시 스킬을 자동으로 발견하도록 함
 - description의 트리거 키워드로 스킬 발견을 유도
 
+**에이전트 파일 vs 스킬 파일 내부 참조 차이**:
+
+1. **에이전트 파일에서 (`agent/sub-agent/*.md`)**:
+   - 목적: 사용 가능한 스킬 목록을 문서화/표시
+   - 패턴: 단순 경로 텍스트만 사용
+   - 예시: `../../.claude/skills/catchup/SKILL.md`
+   - 링크 불필요: 마크다운 링크 형식 `[파일](파일.md)` 사용하지 않음
+   - 이유: 스킬 발견은 description의 트리거 키워드로 자동 처리
+
+2. **스킬 파일 내부에서 (`SKILL.md` 안에서)**:
+   - 목적: Progressive Disclosure를 위한 추가 문서 참조
+   - 패턴: 마크다운 링크 형식 사용
+   - 예시: `For details, see [reference.md](reference.md)`
+   - 링크 필요: Claude가 필요할 때만 lazy loading
+   - 이유: 컨텍스트 효율적 관리
+
 ### 5. 스킬 검증 체크리스트
 
 새 스킬을 생성한 후 다음을 확인합니다:
