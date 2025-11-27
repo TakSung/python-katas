@@ -8,28 +8,29 @@ Guide selection based on your current task or learning goal.
 
 | Document | Purpose | When to Read |
 |----------|---------|--------------|
-| **navigator-usage-guide.md** | Navigator 사용법 (드라이버 관점) | Navigator와 페어 프로그래밍 시작 |
+| **driver-guide.md** | Driver 가이드 (AI Navigator와 페어 프로그래밍) | Driver 역할로 TDD 학습 시작 |
 | **TDD-guide.md** | TDD methodology for beginners | Learning TDD concepts and principles |
 | **directory-structure.md** | Project & Clean Architecture layout | Setting up kata, understanding layers |
-| **agent-dialogue-guide.md** | 에이전트와 효과적으로 대화하는 방법 | TDD 학습 시작, 에이전트 활용법 |
 | **command-reference.md** | Gemini, Python, Git 명령어 모음 | 명령어 문법 필요, 트러블슈팅 |
 | **contributing.md** | Contribution guidelines | Adding agents/skills, documentation rules |
 
 ---
 
-## Navigator Usage Guide
+## Driver Guide
 
-**File**: `docs/navigator-usage-guide.md` (Korean)
+**File**: `docs/driver-guide.md` (Korean)
 
 **Contains**:
-- How to communicate with Navigator (driver perspective)
+- How to work with AI Navigator (driver perspective)
+- Clear role definition (you = Driver, AI = Navigator)
 - 8 common question patterns with examples
 - Communication tips (good vs bad questions)
 - Troubleshooting guide (ImportError, test failures, etc.)
 - Learning workflow (RED-GREEN-REFACTOR)
 
 **Read this when**:
-- First time using Navigator
+- Playing Driver role with AI Navigator
+- First time doing pair programming
 - Want to know what questions to ask
 - Stuck and don't know how to ask for help
 - Want to see real conversation examples
@@ -140,7 +141,7 @@ Guide selection based on your current task or learning goal.
 ## Selection Guide by Situation
 
 ### I'm new to this project
-1. Start: `docs/navigator-usage-guide.md` (Navigator 사용법 익히기)
+1. Start: `docs/driver-guide.md` (Driver 역할로 페어 프로그래밍 시작)
 2. Learn: `docs/TDD-guide.md` (TDD 방법론 이해)
 3. Then: `docs/directory-structure.md` (프로젝트 구조 파악)
 
@@ -150,7 +151,7 @@ Guide selection based on your current task or learning goal.
 3. Use: `docs/TDD-guide.md` (for development flow)
 
 ### I'm stuck / encountering errors
-1. Check: `docs/navigator-usage-guide.md` (Troubleshooting 섹션)
+1. Check: `docs/driver-guide.md` (Troubleshooting 섹션)
 2. If unclear: Use Coach agent (`코치가 되어 상황 설명`)
 3. For imports: `docs/directory-structure.md` (import strategy)
 
@@ -166,7 +167,7 @@ Guide selection based on your current task or learning goal.
 
 ### I need command syntax
 1. Go to: `docs/command-reference.md` (quick reference cards)
-2. Ask Navigator: `docs/navigator-usage-guide.md` (질문 패턴 참고)
+2. Ask Navigator: `docs/driver-guide.md` (질문 패턴 참고)
 3. For skills: `agent/skills/index.md` (skill commands)
 
 ---
@@ -176,12 +177,13 @@ Guide selection based on your current task or learning goal.
 ```
 docs/
 ├── index.md                  # This file - navigation hub
-├── navigator-usage-guide.md  # Navigator 사용법 (드라이버 관점, Korean)
+├── driver-guide.md           # Driver 가이드 (AI Navigator와 함께, Korean)
 ├── TDD-guide.md              # TDD methodology for beginners
 ├── directory-structure.md    # Project & Clean Arch layout
-├── agent-dialogue-guide.md   # 에이전트 대화 가이드 (Korean)
 ├── command-reference.md      # 명령어 레퍼런스 (Korean)
-└── contributing.md           # Contribution guidelines
+├── contributing.md           # Contribution guidelines
+└── archive/
+    └── agent-dialogue-guide.md   # Archived (role-switching contradiction)
 
 agent/
 ├── sub-agent/

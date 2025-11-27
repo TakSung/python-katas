@@ -34,8 +34,8 @@ git merge origin/main
 
 ### 학습 가이드
 
+- **Driver 가이드**: `docs/driver-guide.md` - AI Navigator와 페어 프로그래밍하는 방법 (역할별 가이드)
 - **TDD 방법론**: `docs/TDD-guide.md` - TDD 개념, 원칙, 사이클 이해
-- **에이전트 대화 가이드**: `docs/agent-dialogue-guide.md` - 에이전트와 효과적으로 학습하는 방법
 - **프로젝트 구조**: `docs/directory-structure.md` - Clean Architecture 개념 및 폴더 구조
 
 ### 참고 문서
@@ -90,7 +90,7 @@ cd C:\Users\YourName\source\python\python-katas
 **설치되는 도구:**
 - ✅ Python 3.13
 - ✅ Visual Studio Code
-- ✅ Git & GitHub CLI
+- ✅ Git
 - ✅ Windows Terminal
 - ✅ NVM (Node Version Manager)
 - ✅ Chocolatey (패키지 매니저) - 자동으로 설치됨

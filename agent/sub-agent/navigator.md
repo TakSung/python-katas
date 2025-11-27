@@ -91,6 +91,6 @@ See navigator/examples.md for 8 detailed response examples covering common scena
 
 For TDD workflow and Clean Architecture guidance:
 
-- **../../docs/navigator-usage-guide.md**: User guide for drivers (Korean)
+- **../../docs/driver-guide.md**: User guide for drivers (Korean)
 - **../../docs/TDD-guide.md**: TDD cycle with agent transitions
 - **../../docs/directory-structure.md**: Clean Architecture layer guidance
