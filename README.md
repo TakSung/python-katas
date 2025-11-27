@@ -5,6 +5,27 @@
 
 ## 실전 가이드
 
+### 빠른 명령어 모음
+```bash
+# gemini 실행 관련
+nvm use 20.19.0 
+gemini
+
+# 파이썬 실행 명령어
+pytest # 구현 이후 테스트 케이스 실행
+
+# git 명령어
+
+### checkout 명령어
+git fetch --all
+git checkout -b wu origin/wu # 새로 브랜치를 만들면서 이동할건데, 원격저장소에 wu와 매칭된다.
+
+### 변경사항 업데이트
+git fetch --all
+git pull
+git merge origin/main
+```
+
 ### 명령어 & 도구
 
 - **명령어 레퍼런스**: `docs/command-reference.md` - Gemini, Python, Git 명령어 모음
