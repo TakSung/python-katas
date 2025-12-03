@@ -5,6 +5,7 @@ description = "파이썬으로 진행하는 코딩 카타 - XP 프로그래밍 �
 requires-python = ">=3.13"
 dependencies = [
     "pytest>=8.0.0",
+    "returns>=0.23.0",
 ]
 
 [build-system]
