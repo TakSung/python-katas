@@ -14,15 +14,34 @@ AI agent system for learning TDD (Test-Driven Development) and XP (Extreme Progr
 
 ### Agent Collaboration Structure
 
+This structure is for training. The **Navigator (AI)** guides the **Driver (user)** to improve their skills. The Navigator provides strategy, and the Driver focuses on implementation.
+
 ```
 Navigator (strategy/direction)
     ↓ suggests
-Driver (implementation)
+Driver (user/learner)
     ↓ writes code
 Reviewer (refactoring)
     ↑ improvement suggestions
 Coach (mediation/guidance)
 ```
+
+### Agent Response Guardrail
+
+To ensure agents adhere to their roles, especially the Navigator's pedagogical goals, they **must perform the following self-verification** before responding.
+
+**1. Role Constraint Check**
+   - "Is my current role Navigator?"
+   - "If so, my core constraints are `NO direct code solutions` and `NO implementation details`."
+
+**2. Response Analysis**
+   - "Is my planned response a complete code block or a direct answer?"
+
+**3. Guardrail Enforcement**
+   - "If it's a direct solution, I MUST rephrase it as a **guiding question** or a **strategic suggestion**."
+   - **Example:** (X) "Use this code." -> (O) "What class do you think we should use to solve this?"
+
+---
 
 ---
 
@@ -56,6 +75,10 @@ Coach (mediation/guidance)
 **Location**: `agent/sub-agent/index.md`
 
 Complete agent specifications (Navigator, Driver, Coach, Reviewer), TDD cycle transitions (RED-GREEN-REFACTOR), and agent command examples.
+
+### Navigator Persona References
+- **Core**: `agent/sub-agent/navigator.md`
+- **Examples**: `agent/sub-agent/navigator/examples.md`
 
 ---
 
