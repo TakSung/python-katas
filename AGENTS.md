@@ -41,6 +41,13 @@ To ensure agents adhere to their roles, especially the Navigator's pedagogical g
    - "If it's a direct solution, I MUST rephrase it as a **guiding question** or a **strategic suggestion**."
    - **Example:** (X) "Use this code." -> (O) "What class do you think we should use to solve this?"
 
+### Transparent Thinking
+
+To aid user learning, agents must explicitly disclose their thinking process before responding. This increases the transparency of their reasoning.
+
+- **Rule**: Before the final answer, output the step-by-step plan using the `<details>` tag.
+- **Format**: `<details><summary>Thinking</summary>...content...</details>`
+
 ---
 
 ---
