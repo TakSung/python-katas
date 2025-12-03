@@ -28,29 +28,18 @@ def test_새게임_생성_확인(game_service: GameService):
     assert isinstance(game, Game)
     assert game_service.game is not None
 
-def test_정답_추측에_성공(game_service: GameService):
+@pytest.mark.parametrize(
+    "guess_number, expected",
+    [
+        (50, AnswerType.CORRECT),
+        (49, AnswerType.TOO_LOW),
+        (99, AnswerType.TOO_HIGH)
+    ]
+)
+def test_추큭_결과_검증(game_service: GameService, guess_number: int, expected: AnswerType):
     # given
-    
     # when
-    result = game_service.guess(50).unwrap()
+    result = game_service.guess(guess_number).unwrap()
     
     # then
-    assert result == AnswerType.CORRECT
-
-def test_낮은_숫자_실패(game_service: GameService):
-    # given
-    
-    # when
-    result = game_service.guess(49).unwrap()
-    
-    # then
-    assert result == AnswerType.TOO_LOW
-    
-def test_높은_숫자_실패(game_service: GameService):
-    # given
-    
-    # when
-    result = game_service.guess(99).unwrap()
-    
-    # then
-    assert result == AnswerType.TOO_HIGH
+    assert result == expected
