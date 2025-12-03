@@ -13,6 +13,11 @@ class AnswerType(Enum):
     TOO_HIGH = "더 높음"
     CORRECT = "정답"
 
+class GameResult(Enum):
+    WIN = "승리"
+    LOSE = "패배"
+    IN_PROGRESS = "진행중"
+
 @dataclass(frozen=True)
 class Game:
     # 이 변수들은 인스턴스가 생성될 때마다 달라지는 값입니다.
@@ -24,7 +29,7 @@ class Game:
     MAX_ATTEMPTS:int = 10 # 게임 전체에 동일하게 설정
     
     def guess(self, guess_number:int) -> Self:
-        answer = self.__distinct__(guess_number)
+        answer = self._evaluate_guess(guess_number)
         
         return replace(
             self,
@@ -32,7 +37,7 @@ class Game:
             last_answer=answer
         )
     
-    def __distinct__(self, guess_number:int) -> AnswerType:
+    def _evaluate_guess(self, guess_number:int) -> AnswerType:
         if self.secret_number > guess_number:
             return AnswerType.TOO_LOW
         elif self.secret_number == guess_number:
@@ -40,7 +45,15 @@ class Game:
         else:
             return AnswerType.TOO_HIGH
     
-    def is_game_over(self) -> bool:
+    def game_status(self) -> GameResult:
+        if self.last_answer == AnswerType.CORRECT:
+            return GameResult.WIN
+        elif self.is_attempt_limit_reached():
+            return GameResult.LOSE
+        else :
+            return GameResult.IN_PROGRESS
+    
+    def is_attempt_limit_reached(self) -> bool:
         return self.MAX_ATTEMPTS <= self.attempt
 
     

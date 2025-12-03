@@ -1,7 +1,7 @@
 # Test for Game Domain Entity
 # TODO: Game 엔티티에 대한 단위 테스트를 작성합니다
 
-from domain.game import Game, AnswerType
+from domain.game import Game, AnswerType, GameResult
 
 def test_추측한_숫자가_정답보다_작은_경우():
     # given
@@ -33,22 +33,15 @@ def test_추측한_숫자가_정답과_같은_경우():
     # then
     assert result == AnswerType.CORRECT
     
-def test_횟수_추측():
+def test_시도_횟수가_정확히_증가하는지_검증():
     # given
     game = Game(secret_number=50)
     
     # when
-    last_num = 0
-    for i in range(1,100):
-        last_num = i
-        game = game.guess(i)
-        result = game.last_answer
-        if result == AnswerType.CORRECT :
-            break
+    game = game.guess(48).guess(49)
     
     # then
-    assert last_num == 50
-    assert game.attempt == 50
+    assert game.attempt == 2
 
 def test_최대_시도_횟수_검증():
     # given
@@ -58,8 +51,8 @@ def test_최대_시도_횟수_검증():
     
     # when
     for i in range(max_attempt):
-        assert not game.is_game_over()
+        assert game.game_status() == GameResult.IN_PROGRESS
         game = game.guess(49)
     
     # then
-    assert game.is_game_over()
+    assert game.game_status() == GameResult.LOSE
