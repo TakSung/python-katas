@@ -7,7 +7,7 @@
 $packagesToInstall = @{
     "python313" = "Python 3.13"
     "vscode" = "Visual Studio Code"
-    "git" = "GitHub CLI"
+    "git" = "Git"
     "microsoft-windows-terminal" = "Windows Terminal"
     "nvm" = "NVM (Node Version Manager)"
 }
@@ -139,9 +139,9 @@ if (Get-Command code -ErrorAction SilentlyContinue) {
     Write-Host "❌ VSCode 설치 확인 실패" -ForegroundColor Red
 }
 
-# GitHub CLI 확인
-if (Get-Command gh -ErrorAction SilentlyContinue) {
-    $ghVersion = gh --version | Select-Object -First 1
+# Git 확인
+if (Get-Command git -ErrorAction SilentlyContinue) {
+    $ghVersion = git --version | Select-Object -First 1
     Write-Host "✅ GitHub CLI 설치 완료: $ghVersion" -ForegroundColor Green
     $installStatus["GitHub CLI"] = $true
 } else {
