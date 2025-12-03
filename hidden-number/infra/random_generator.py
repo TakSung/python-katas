@@ -4,8 +4,13 @@
 # - Protocol 또는 ABC로 인터페이스 정의
 # - 1-100 사이의 랜덤 숫자 생성
 from typing import Protocol
+import random
 
 class RandomGenerator(Protocol):
     """1과 100 사이의 숫자를 생성하는 객체의 규칙을 정의합니다."""
     def generate(self) -> int:
         ...
+        
+class SystemRandomGenerator:
+    def generate(self) -> int:
+        return random.randint(1,100)
