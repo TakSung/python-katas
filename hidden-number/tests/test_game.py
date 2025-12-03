@@ -52,14 +52,12 @@ def test_최대_시도_횟수_검증(game: Game):
     # then
     assert game.game_status() == GameResult.LOSE
 
-def test_마지막_시도에_정답을_맞추면_게임은_승리_상태이다(game: Game):
+def test_마지막_시도에_정답을_맞추면_게임은_승리_상태이다():
     # given
-    start_num = 41
-    max_attempt = 10 
+    game = Game(secret_number=50, attempt=9)
     
     # when
-    for guess_number in range(start_num, start_num+max_attempt):
-        game = game.guess(guess_number)
+    game = game.guess(50)
     
     # then
     assert game.game_status() == GameResult.WIN
