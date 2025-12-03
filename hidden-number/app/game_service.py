@@ -4,14 +4,39 @@
 # - 추측 검증 (higher, lower, correct)
 # - 게임 상태 관리
 
-from dataclasses import dataclass
-from typing import Optional
-from domain.game import Game
+from typing import Optional, List
+from dataclasses import dataclass, field
+from returns.result import Result, Success, Failure
+
+from domain.game import Game, AnswerType
+
 
 @dataclass
 class GameService:
     game: Optional[Game] = None
+    _history: List[Game] = field(default_factory=list)
+    
+    def _update_game(self, game:Game):
+        assert isinstance(game, Game)
+        assert isinstance(self._history, list)
+        
+        self.game = game
+        self._history.append(game)
+        return True
     
     def new_game(self) -> Optional[Game]:
-        self.game = Game(secret_number=50)
+        self._update_game(Game(secret_number=50))
         return self.game
+    
+    def guess(self, guess_number:int) -> Result[AnswerType, str]:
+        if self.game is None:
+            return Failure("게임 미생성 - GameService::new_game 후 진행해 주세요.")
+        
+        new_game = self.game.guess(guess_number)
+        self._update_game(new_game)
+        
+        if new_game.last_answer is None:
+            assert False # 이런 경우는 존재하지 않습니다.
+            return Failure("Assertion 오류 : last_answer 미생성")
+        
+        return Success(new_game.last_answer)
