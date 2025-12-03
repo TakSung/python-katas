@@ -8,8 +8,13 @@ from typing import Optional, List
 from dataclasses import dataclass, field
 from returns.result import Result, Success, Failure
 
-from domain.game import Game, AnswerType
+from domain.game import Game, AnswerType, GameResult
 from domain.protocols import NumberGenerator
+
+@dataclass(frozen=True)
+class GuessDto:
+    hint :AnswerType
+    result :GameResult
 
 @dataclass
 class GameService:
@@ -29,7 +34,7 @@ class GameService:
         self._update_game(Game(secret_number=50))
         return self.game
     
-    def guess(self, guess_number:int) -> Result[AnswerType, str]:
+    def guess(self, guess_number:int) -> Result[GuessDto, str]:
         if self.game is None:
             return Failure("게임 미생성 - GameService::new_game 후 진행해 주세요.")
         
@@ -40,4 +45,4 @@ class GameService:
             assert False # 이런 경우는 존재하지 않습니다.
             return Failure("Assertion 오류 : last_answer 미생성")
         
-        return Success(new_game.last_answer)
+        return Success(GuessDto(new_game.last_answer, new_game.game_status()))
