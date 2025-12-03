@@ -56,9 +56,9 @@ def test_최대_시도_횟수_검증():
     assert max_attempt == game.get_max_attempt()
     
     # when
-    for i in range(max_attempt+1):
-        assert game.is_game_over() == False
+    for i in range(max_attempt):
+        assert not game.is_game_over()
         game.guess(49)
     
     # then
-    assert game.is_game_over() == True
+    assert game.is_game_over()
