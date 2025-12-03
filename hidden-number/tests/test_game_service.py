@@ -36,3 +36,21 @@ def test_정답_추측에_성공(game_service: GameService):
     
     # then
     assert result == AnswerType.CORRECT
+
+def test_낮은_숫자_실패(game_service: GameService):
+    # given
+    
+    # when
+    result = game_service.guess(49).unwrap()
+    
+    # then
+    assert result == AnswerType.TOO_LOW
+    
+def test_높은_숫자_실패(game_service: GameService):
+    # given
+    
+    # when
+    result = game_service.guess(99).unwrap()
+    
+    # then
+    assert result == AnswerType.TOO_HIGH
