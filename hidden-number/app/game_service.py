@@ -9,10 +9,11 @@ from dataclasses import dataclass, field
 from returns.result import Result, Success, Failure
 
 from domain.game import Game, AnswerType
-
+from domain.protocols import NumberGenerator
 
 @dataclass
 class GameService:
+    number_generator: NumberGenerator
     game: Optional[Game] = None
     _history: List[Game] = field(default_factory=list)
     

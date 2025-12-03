@@ -1,13 +1,22 @@
 # Test for Game Service
 # TODO: GameService에 대한 단위 테스트를 작성합니다
 import pytest
+from dataclasses import dataclass
 
 from domain.game import Game, GameResult, AnswerType
+from domain.protocols import NumberGenerator
 from app.game_service import GameService
+
+@dataclass(frozen=True)
+class FixNumberGenerator(NumberGenerator):
+    number:int
+    def generate(self) -> int:
+        return self.generate()
 
 @pytest.fixture
 def game_service()-> GameService:
-    game_service = GameService()
+    number_generator = FixNumberGenerator(50)
+    game_service = GameService(number_generator)
     game_service.new_game()
     return game_service
 
