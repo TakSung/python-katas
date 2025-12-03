@@ -31,7 +31,8 @@ class GameService:
         return True
     
     def new_game(self) -> Optional[Game]:
-        self._update_game(Game(secret_number=50))
+        secret_number = self.number_generator.generate()
+        self._update_game(Game(secret_number=secret_number))
         return self.game
     
     def guess(self, guess_number:int) -> Result[GuessDto, str]:

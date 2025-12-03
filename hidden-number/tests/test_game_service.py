@@ -11,7 +11,7 @@ from app.game_service import GameService
 class FixNumberGenerator(NumberGenerator):
     number:int
     def generate(self) -> int:
-        return self.generate()
+        return self.number
 
 @pytest.fixture
 def game_service()-> GameService:
