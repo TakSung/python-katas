@@ -29,15 +29,24 @@ platforms/
 
 ### 자동 설정 (권장)
 
-**준비 중**: `setup-platform.py` 스크립트를 사용하여 자동으로 플랫폼별 파일을 설정할 수 있습니다.
+`setup-platform.py` 스크립트를 사용하여 자동으로 플랫폼별 파일을 설정할 수 있습니다.
 
 ```bash
-# Windows 사용자
-python setup-platform.py windows
+# 플랫폼 자동 감지
+python setup-platform.py
 
-# Linux/macOS 사용자
-python setup-platform.py linux
+# 또는 플랫폼 명시
+python setup-platform.py windows  # Windows 사용자
+python setup-platform.py linux    # Linux/macOS 사용자
 ```
+
+**스크립트 동작**:
+1. `.katarc`가 없으면 `.katarc.example`에서 복사
+2. `platforms/{platform}/` 파일을 프로젝트 루트로 복사
+   - `scripts/` - 플랫폼별 헬퍼 스크립트
+   - `.claude/skills/*/SKILL.md` - 플랫폼별 스킬 명세
+3. 플랫폼 설정을 `.katarc`에 추가
+4. Linux/macOS의 경우 스크립트에 실행 권한 부여
 
 ### 수동 설정
 
