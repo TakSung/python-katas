@@ -61,8 +61,8 @@ main() {
             fi
             ;;
         run)
-            local module="${1:-${CURRENT_KATA}.main}"
-            run_in_venv "python -m ${module}"
+            local module="${1:-main}"
+            run_in_venv "cd ${CURRENT_KATA} && python -m ${module}"
             ;;
         syntax-check)
             local file_path="${1}"
