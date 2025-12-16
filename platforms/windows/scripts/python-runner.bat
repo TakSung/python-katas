@@ -54,8 +54,8 @@ exit /b %ERRORLEVEL%
 
 :cmd_run
 set MODULE=%1
-if "%MODULE%"=="" set MODULE=%CURRENT_KATA%.main
-call :run_in_venv "python -m %MODULE%"
+if "%MODULE%"=="" set MODULE=main
+call :run_in_venv "cd %CURRENT_KATA% && python -m %MODULE%"
 exit /b %ERRORLEVEL%
 
 :cmd_syntax_check
