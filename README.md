@@ -7,6 +7,9 @@
 
 ### 빠른 명령어 모음
 ```bash
+# 에이전트 스크립트 플렛폼 설정(자동 디텍션)
+python setup-platform.py
+
 # gemini 실행 관련
 nvm use 20.19.0 
 gemini

@@ -1,0 +1,8 @@
+# Python Katas Configuration
+# Current active kata project
+# Copy this file to .katarc and modify as needed
+
+CURRENT_KATA=hidden-number
+
+# Platform-specific settings will be added by setup-platform.py
+# DO NOT manually add platform settings below this line
