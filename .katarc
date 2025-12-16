@@ -1,0 +1,4 @@
+# Python Katas Configuration
+# Current active kata project
+
+CURRENT_KATA=hidden-number
