@@ -1,12 +1,12 @@
 ---
 name: python-runner
-description: Python 프로젝트 실행, 테스트, 문법 검사, 임포트 검증을 위한 스킬. `scripts/python-runner.sh`를 사용합니다.
+description: Python 프로젝트 실행, 테스트, 문법 검사, 임포트 검증을 위한 스킬. `scripts\python-runner.bat`를 사용합니다.
 allowed-tools: Bash
 ---
 
 # Python Runner - 파이썬 실행 및 검증 스킬
 
-이 스킬은 `scripts/python-runner.sh` 래퍼 스크립트를 사용하여 `.venv` 가상환경에서 Python 프로젝트를 실행, 테스트 및 검증합니다.
+이 스킬은 `scripts\python-runner.bat` 래퍼 스크립트를 사용하여 `.venv` 가상환경에서 Python 프로젝트를 실행, 테스트 및 검증합니다.
 
 모든 명령어는 `.katarc` 파일에 정의된 현재 `kata` 프로젝트의 컨텍스트에서 실행됩니다.
 
