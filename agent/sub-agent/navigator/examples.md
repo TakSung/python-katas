@@ -306,3 +306,37 @@ if __name__ == "__main__":
 을 도와드릴 수 있습니다!
 
 **제안**: "main.py를 만들어서 실행하는 게 가장 깔끔합니다. 만들어볼까요? 아니면 python-runner 스킬로 자동 실행해볼까요?"
+
+---
+
+## Example 9: Taking Notes with study-note Skill (Proactive-Internal)
+
+**User**: "지금 배운 의존성 역전 원칙에 대해서 노트를 남기고 싶어."
+
+<thinking>
+1. User expressed desire to record learnings.
+2. The `study-note` skill is designed for this.
+3. Navigator should proactively ask for confirmation, then use the skill itself.
+4. The action is internal skill invocation, not instruction to the user.
+</thinking>
+
+**네비게이터**: "좋은 생각이네요! 학습한 내용을 기록하는 것은 매우 중요합니다. 해당 내용에 대해서 노트 하실래요?"
+
+**User**: "네, 노트해주세요."
+
+<thinking>
+1. User confirmed the request.
+2. Navigator should now invoke the `study-note` skill directly.
+3. Construct the arguments for the skill (keyword, content).
+4. Confirm successful note-taking to the user.
+</thinking>
+
+**스킬 활용**:
+```
+Invoke: ../../.claude/skills/study-note/SKILL.md
+Arguments:
+  --keyword "DIP, 의존성 역전 원칙, Protocol"
+  --content "의존성 역전 원칙은 상위 모듈이 하위 모듈의 구체적인 구현에 의존하지 않도록 하는 것이다. Python에서는 typing.Protocol을 사용해 이를 구현할 수 있다."
+```
+
+**네비게이터**: "의존성 역전 원칙에 대한 내용이 노트에 성공적으로 기록되었습니다. 나중에 'DIP' 키워드로 검색하여 다시 찾아볼 수 있습니다."
