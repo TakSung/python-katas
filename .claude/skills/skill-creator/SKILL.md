@@ -10,29 +10,62 @@ allowed-tools: Write, Read, Bash, Glob
 
 ## 주요 기능
 
-### 1. 새 스킬 생성 프로세스
+### 1. 스킬 구조 선택
 
-사용자와 인터뷰하여 필요한 정보를 수집하고 스킬을 생성합니다.
+새 스킬을 만들 때 다음 두 가지 패턴 중 선택합니다:
 
-**필수 수집 정보:**
-1. **스킬 이름** (kebab-case, 소문자+하이픈, 최대 64자)
-2. **스킬 설명** (무엇을 하는지 + 언제 사용하는지, 최대 1024자)
-3. **주요 기능** (스킬이 제공할 기능들)
-4. **사용 도구** (Bash, Read, Write, Grep, Glob 등)
-5. **예시 사용 케이스** (사용자가 어떻게 요청할지)
+#### 패턴 A: 헬퍼 스크립트 기반 스킬 (권장)
 
-### 2. 스킬 구조 생성
+복잡한 로직이나 반복 작업이 필요한 경우:
 
-```bash
-# 스킬 디렉토리 생성
-mkdir -p .claude/skills/[스킬-이름]
+```
+.claude/skills/[skill-name]/
+└── SKILL.md
 
-# 필요시 서브 디렉토리 생성
-mkdir -p .claude/skills/[스킬-이름]/scripts
-mkdir -p .claude/skills/[스킬-이름]/templates
+platforms/linux/scripts/
+└── [skill-name]-helper.sh
+
+platforms/windows/scripts/
+└── [skill-name]-helper.bat
 ```
 
-### 3. SKILL.md 작성 가이드
+**생성 명령어:**
+```bash
+# 1. 스킬 디렉토리 생성
+mkdir -p .claude/skills/[스킬-이름]
+
+# 2. 플랫폼 스크립트 디렉토리 생성
+mkdir -p platforms/linux/scripts
+mkdir -p platforms/windows/scripts
+
+# 3. 헬퍼 스크립트 생성
+touch platforms/linux/scripts/[스킬-이름]-helper.sh
+touch platforms/windows/scripts/[스킬-이름]-helper.bat
+
+# 4. Linux 스크립트 실행 권한
+chmod +x platforms/linux/scripts/[스킬-이름]-helper.sh
+```
+
+**사용 예시:**
+- `catchup`: Git 변경사항 추적 (`git-helper.sh`)
+- `python-runner`: Python 프로젝트 실행 (`python-runner.sh`)
+- `study-note`: 학습 노트 기록 (`study-note-helper.sh`)
+
+#### 패턴 B: 단순 스킬 (헬퍼 스크립트 없음)
+
+간단한 Bash 명령어만 사용하는 경우:
+
+```
+.claude/skills/[skill-name]/
+└── SKILL.md
+```
+
+**사용 예시:**
+- 간단한 파일 읽기/검색
+- 단일 명령어 실행
+- 정보 조회
+
+### 2. SKILL.md 작성 가이드
 
 스킬 파일은 다음 구조를 따릅니다:
 
@@ -66,7 +99,184 @@ allowed-tools: Tool1, Tool2, Tool3
 알아야 할 제약사항이나 요구사항
 ```
 
-### 4. 베스트 프랙티스 적용
+**SKILL.md에서 헬퍼 스크립트 호출 방법:**
+
+```markdown
+## 주요 기능
+
+### 기능 1: 상태 확인
+
+현재 상태를 확인합니다.
+
+| 작업 | 명령어 | 설명 |
+|---|---|---|
+| **상태 확인** | `./scripts/스킬이름-helper.sh status` | 현재 상태 출력 |
+
+**사용 예시:**
+> "상태 확인해줘"
+
+→ `./scripts/스킬이름-helper.sh status`를 실행하여 결과 표시
+```
+
+### 3. 헬퍼 스크립트 작성 가이드
+
+헬퍼 스크립트는 다음 구조를 따릅니다:
+
+#### Linux 스크립트 (.sh) 템플릿
+
+```bash
+#!/bin/bash
+
+# UTF-8 설정
+export LC_ALL=C.UTF-8
+
+# 프로젝트 루트 및 설정 로드
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$PROJECT_ROOT"
+
+KATARC_FILE=".katarc"
+
+# 색상 정의
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# 헬퍼 함수
+error_exit() {
+    echo -e "${RED}❌ 오류:${NC} $1" >&2
+    exit "${2:-1}"
+}
+
+success_msg() {
+    echo -e "${GREEN}✅${NC} $1"
+}
+
+info_msg() {
+    echo -e "${YELLOW}ℹ${NC}  $1"
+}
+
+# .katarc 로드
+load_config() {
+    if [ ! -f "$KATARC_FILE" ]; then
+        error_exit ".katarc not found"
+    fi
+    source "$KATARC_FILE"
+}
+
+# 사용법 출력
+usage() {
+    echo "Usage: $0 {command1|command2|help}"
+    echo ""
+    echo "Commands:"
+    echo "  command1    - 설명"
+    echo "  command2    - 설명"
+    echo "  help        - Show this help message"
+}
+
+# 메인 로직
+main() {
+    load_config
+
+    local command="${1:-help}"
+    shift || true
+
+    case "$command" in
+        command1)
+            # 구현
+            ;;
+        command2)
+            # 구현
+            ;;
+        help|*)
+            usage
+            ;;
+    esac
+}
+
+main "$@"
+```
+
+#### Windows 스크립트 (.bat) 템플릿
+
+```batch
+@echo off
+setlocal enabledelayedexpansion
+chcp 65001 > nul
+
+REM Change to project root
+cd /d "%~dp0\..\..\"
+
+REM Colors (ANSI escape codes)
+set "RED=[31m"
+set "GREEN=[32m"
+set "YELLOW=[33m"
+set "BLUE=[34m"
+set "NC=[0m"
+
+REM Load .katarc
+set KATARC_FILE=.katarc
+if not exist "%KATARC_FILE%" (
+    echo %RED%❌ .katarc not found%NC%
+    exit /b 1
+)
+
+for /f "tokens=1,2 delims==" %%a in (%KATARC_FILE%) do (
+    if "%%a"=="CURRENT_KATA" set CURRENT_KATA=%%b
+)
+
+REM Main command dispatcher
+set COMMAND=%1
+if "%COMMAND%"=="" set COMMAND=help
+shift
+
+if "%COMMAND%"=="command1" goto cmd_command1
+if "%COMMAND%"=="command2" goto cmd_command2
+if "%COMMAND%"=="help" goto cmd_help
+goto cmd_help
+
+:cmd_command1
+echo Processing command1...
+exit /b 0
+
+:cmd_command2
+echo Processing command2...
+exit /b 0
+
+:cmd_help
+echo Usage: %~nx0 ^<command^> [options]
+echo.
+echo Commands:
+echo   command1    - 설명
+echo   command2    - 설명
+echo   help        - Show this help message
+exit /b 0
+```
+
+### 4. setup-platform.py 연동
+
+헬퍼 스크립트를 생성한 후 `setup-platform.py`를 통해 배포합니다:
+
+```bash
+# 플랫폼별 스크립트 복사 및 .katarc 업데이트
+python setup-platform.py
+```
+
+**setup-platform.py가 하는 일:**
+1. 현재 플랫폼 감지 (Linux/Windows)
+2. `platforms/{platform}/scripts/`에서 `scripts/`로 스크립트 복사
+3. `.katarc`에 플랫폼 설정 추가
+
+**배포 후 스크립트 경로:**
+```
+scripts/
+├── git-helper.sh (또는 .bat)
+├── python-runner.sh (또는 .bat)
+└── study-note-helper.sh (또는 .bat)
+```
+
+### 5. 베스트 프랙티스 적용
 
 새 스킬 작성 시 다음 원칙을 따릅니다:
 
@@ -150,7 +360,7 @@ Note: (at)을 @로 바꿔서 사용하면 안 됩니다!
    - 링크 필요: Claude가 필요할 때만 lazy loading
    - 이유: 컨텍스트 효율적 관리
 
-### 5. 스킬 검증 체크리스트
+### 6. 스킬 검증 체크리스트
 
 새 스킬을 생성한 후 다음을 확인합니다:
 
@@ -158,10 +368,20 @@ Note: (at)을 @로 바꿔서 사용하면 안 됩니다!
 # 1. 파일 존재 확인
 ls -la .claude/skills/[스킬-이름]/SKILL.md
 
-# 2. YAML frontmatter 검증
+# 2. 헬퍼 스크립트 확인 (패턴 A인 경우)
+ls -la platforms/linux/scripts/[스킬-이름]-helper.sh
+ls -la platforms/windows/scripts/[스킬-이름]-helper.bat
+
+# 3. setup-platform.py 실행
+python setup-platform.py
+
+# 4. 스크립트 실행 확인
+./scripts/[스킬-이름]-helper.sh help
+
+# 5. YAML frontmatter 검증
 head -n 10 .claude/skills/[스킬-이름]/SKILL.md
 
-# 3. 스킬 목록 확인 (Claude Code 재시작 후)
+# 6. 스킬 목록 확인 (Claude Code 재시작 후)
 # Claude에게 "사용 가능한 스킬 목록 보여줘" 요청
 ```
 
@@ -170,47 +390,89 @@ head -n 10 .claude/skills/[스킬-이름]/SKILL.md
 - [ ] description이 구체적이고 트리거 키워드를 포함하는가?
 - [ ] allowed-tools가 필요한 최소한의 도구만 포함하는가?
 - [ ] YAML 문법이 올바른가? (---, 들여쓰기, 콜론)
+- [ ] 헬퍼 스크립트가 Linux/Windows 둘 다 존재하는가?
+- [ ] 헬퍼 스크립트가 UTF-8을 지원하는가?
+- [ ] setup-platform.py로 배포 후 scripts/에 복사되었는가?
 - [ ] 사용 예시가 구체적인가?
-- [ ] 한글 인코딩 처리가 필요한 경우 포함되었는가?
 
 ## 인터뷰 프로세스
 
-사용자가 새 스킬을 만들고 싶어할 때 다음 순서로 질문합니다:
+사용자가 새 스킬을 만들고 싶어할 때 다음 순서로 진행합니다:
 
-### 질문 1: 스킬 이름
-"어떤 이름의 스킬을 만들고 싶으신가요? (kebab-case, 예: my-skill-name)"
+### 1단계: 스킬 패턴 결정
 
-### 질문 2: 스킬 목적
-"이 스킬이 무엇을 하길 원하시나요? 어떤 문제를 해결하나요?"
+**질문**: "이 스킬은 헬퍼 스크립트가 필요한 복잡한 작업인가요, 아니면 간단한 명령어만 실행하나요?"
 
-### 질문 3: 트리거 키워드
-"사용자가 어떤 말을 했을 때 이 스킬을 사용하길 원하시나요? (예: 'PDF 분석', '코드 리뷰')"
+- **패턴 A 선택**: 복잡한 로직, 반복 작업, 여러 명령어 조합
+- **패턴 B 선택**: 단일 명령어, 간단한 조회
 
-### 질문 4: 필요한 도구
-"이 스킬이 사용할 도구는 무엇인가요? (Bash, Read, Write, Grep, Glob 등)"
+### 2단계: 기본 정보 수집
 
-### 질문 5: 사용 예시
-"구체적인 사용 시나리오를 하나 알려주시겠어요?"
+**필수 정보:**
+1. **스킬 이름** (kebab-case, 소문자+하이픈, 최대 64자)
+   - "어떤 이름의 스킬을 만들고 싶으신가요? (예: my-skill-name)"
+
+2. **스킬 설명** (무엇을 + 언제)
+   - "이 스킬이 무엇을 하길 원하시나요? 어떤 문제를 해결하나요?"
+
+3. **트리거 키워드**
+   - "사용자가 어떤 말을 했을 때 이 스킬을 사용하길 원하시나요? (예: 'PDF 분석', '코드 리뷰')"
+
+4. **필요한 도구**
+   - "이 스킬이 사용할 도구는 무엇인가요? (Bash, Read, Write, Grep, Glob 등)"
+
+5. **사용 예시**
+   - "구체적인 사용 시나리오를 하나 알려주시겠어요?"
+
+### 3단계: 헬퍼 스크립트 설계 (패턴 A인 경우)
+
+**질문:**
+1. "헬퍼 스크립트가 제공할 명령어들은 무엇인가요? (예: status, add, search)"
+2. ".katarc에서 필요한 설정 값이 있나요? (예: CURRENT_KATA, ENV_TYPE)"
+3. "각 명령어의 입력 인자는 무엇인가요?"
+
+### 4단계: 파일 생성
+
+1. 스킬 디렉토리 및 SKILL.md 생성
+2. (패턴 A인 경우) 헬퍼 스크립트 생성 (Linux + Windows)
+3. setup-platform.py 실행
+4. 검증 체크리스트 실행
 
 ## 템플릿 사용
 
 기본 템플릿은 [template.md](template.md)를 참조하세요.
 
+헬퍼 스크립트 템플릿은 다음을 참조하세요:
+- Linux: [helper-script-template.sh](helper-script-template.sh)
+- Windows: [helper-script-template.bat](helper-script-template.bat)
+
 베스트 프랙티스 상세 가이드는 [best-practices.md](best-practices.md)를 참조하세요.
 
 ## 사용 예시
 
-**예시 1: 새 스킬 생성**
-> "API 문서를 자동으로 생성하는 스킬을 만들고 싶어"
+**예시 1: 새 헬퍼 스크립트 기반 스킬 생성**
+> "테스트 커버리지를 측정하고 보고서를 생성하는 스킬을 만들고 싶어"
 
-→ 인터뷰 프로세스 시작, 정보 수집 후 스킬 생성
+→ 인터뷰 프로세스 시작
+→ 패턴 A 선택 (복잡한 작업)
+→ coverage-reporter 스킬 + 헬퍼 스크립트 생성
+→ setup-platform.py 실행
+→ 검증 완료
 
-**예시 2: 기존 스킬 개선**
+**예시 2: 단순 스킬 생성**
+> "프로젝트 디렉토리 구조를 tree 명령어로 보여주는 스킬"
+
+→ 인터뷰 프로세스 시작
+→ 패턴 B 선택 (단일 명령어)
+→ tree-viewer 스킬만 생성 (SKILL.md만)
+→ 검증 완료
+
+**예시 3: 기존 스킬 개선**
 > "catchup 스킬의 description을 더 구체적으로 만들어줘"
 
 → 스킬 파일 읽고, 베스트 프랙티스 적용하여 개선
 
-**예시 3: 스킬 검증**
+**예시 4: 스킬 검증**
 > "방금 만든 스킬이 제대로 작성되었는지 확인해줘"
 
 → 검증 체크리스트 실행
@@ -220,10 +482,14 @@ head -n 10 .claude/skills/[스킬-이름]/SKILL.md
 1. **스킬 이름 규칙**: 소문자, 숫자, 하이픈만 사용 (최대 64자)
 2. **Description 중요성**: Claude가 스킬을 발견하는 유일한 방법
 3. **도구 최소화**: 필요한 최소한의 도구만 허용
-4. **테스트 필수**: 스킬 생성 후 반드시 Claude Code 재시작 후 테스트
-5. **한글 지원**: 한글 파일명/내용 처리 시 인코딩 설정 필수
+4. **헬퍼 스크립트 위치**: `platforms/{linux|windows}/scripts/`에 생성
+5. **setup-platform.py 필수**: 헬퍼 스크립트를 `scripts/`로 복사
+6. **플랫폼 독립성**: Linux/Windows 둘 다 구현
+7. **UTF-8 인코딩**: 한글 지원 필수
+8. **테스트 필수**: 스킬 생성 후 반드시 Claude Code 재시작 후 테스트
 
 ## 참고 자료
 
 - Claude Code 공식 문서: https://code.claude.com/docs/en/agent-skills
-- 이 프로젝트의 스킬 예시: [catchup](./../catchup/SKILL.md)
+- 이 프로젝트의 스킬 예시: [catchup](./../catchup/SKILL.md), [python-runner](./../python-runner/SKILL.md), [study-note](./../study-note/SKILL.md)
+- 헬퍼 스크립트 예시: [platforms/linux/scripts/](../../platforms/linux/scripts/)

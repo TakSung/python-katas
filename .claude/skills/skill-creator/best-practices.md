@@ -108,7 +108,140 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 - 프로젝트 설정 도구
 - 마이그레이션 스크립트
 
-## 4. 출력 최적화
+## 4. 헬퍼 스크립트 패턴
+
+### 언제 헬퍼 스크립트를 사용하는가?
+
+**헬퍼 스크립트 필요 (패턴 A):**
+- 복잡한 로직이 필요한 경우
+- 여러 명령어를 조합해야 하는 경우
+- .katarc 설정 값을 읽어야 하는 경우
+- 플랫폼별 차이를 추상화해야 하는 경우
+- 재사용 가능한 기능이 필요한 경우
+
+**헬퍼 스크립트 불필요 (패턴 B):**
+- 단일 명령어만 실행하는 경우
+- 간단한 파일 읽기/검색만 하는 경우
+- 정보 조회만 하는 경우
+
+### 헬퍼 스크립트 구조
+
+#### 필수 요소
+
+1. **UTF-8 인코딩 설정**
+   ```bash
+   # Linux
+   export LC_ALL=C.UTF-8
+
+   # Windows
+   chcp 65001 > nul
+   ```
+
+2. **프로젝트 루트 경로 설정**
+   ```bash
+   # Linux
+   PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+   cd "$PROJECT_ROOT"
+
+   # Windows
+   cd /d "%~dp0\..\..\"
+   ```
+
+3. **.katarc 로드**
+   ```bash
+   # Linux
+   source .katarc
+
+   # Windows
+   for /f "tokens=1,2 delims==" %%a in (.katarc) do (
+       if "%%a"=="CURRENT_KATA" set CURRENT_KATA=%%b
+   )
+   ```
+
+4. **에러 핸들링**
+   ```bash
+   # Linux
+   error_exit() {
+       echo -e "${RED}❌ 오류:${NC} $1" >&2
+       exit "${2:-1}"
+   }
+
+   # Windows
+   if errorlevel 1 (
+       echo %RED%❌ 오류%NC%
+       exit /b 1
+   )
+   ```
+
+5. **커맨드 디스패처**
+   ```bash
+   # Linux
+   case "${1:-help}" in
+       command1) ... ;;
+       command2) ... ;;
+       help|*) usage ;;
+   esac
+
+   # Windows
+   if "%1"=="command1" goto cmd_command1
+   if "%1"=="help" goto cmd_help
+   goto cmd_help
+   ```
+
+### 헬퍼 스크립트 네이밍
+
+- **패턴**: `[스킬-이름]-helper.sh` 또는 `[스킬-이름]-helper.bat`
+- **위치**: `platforms/{linux|windows}/scripts/`
+- **배포 후**: `scripts/` (setup-platform.py가 복사)
+
+**예시:**
+- `git-helper.sh` / `git-helper.bat`
+- `python-runner.sh` / `python-runner.bat`
+- `study-note-helper.sh` / `study-note-helper.bat`
+
+## 5. setup-platform.py 연동
+
+### 배포 프로세스
+
+1. **스크립트 작성**: `platforms/{linux|windows}/scripts/`에 헬퍼 스크립트 작성
+2. **setup-platform.py 실행**: `python setup-platform.py`
+3. **스크립트 복사**: `scripts/`로 자동 복사
+4. **.katarc 업데이트**: 플랫폼 설정 자동 추가
+
+### .katarc 구조
+
+```bash
+# Python Katas Configuration
+CURRENT_KATA=hidden-number
+
+# Platform: Linux (setup-platform.py가 추가)
+PLATFORM=linux
+SCRIPT_EXT=.sh
+ENV_TYPE=venv
+VENV_ACTIVATE=.venv/bin/activate
+```
+
+### 플랫폼별 스크립트 호출
+
+SKILL.md에서 스크립트를 호출할 때:
+
+```markdown
+| 작업 | 명령어 | 설명 |
+|---|---|---|
+| **상태 확인** | `./scripts/helper-name${SCRIPT_EXT} status` | 현재 상태 출력 |
+```
+
+실제로는 setup-platform.py가 `.sh` 또는 `.bat`을 복사하므로:
+
+```bash
+# Linux 환경
+./scripts/helper-name.sh status
+
+# Windows 환경
+scripts\helper-name.bat status
+```
+
+## 6. 출력 최적화
 
 ### 에이전트 컨텍스트 절약
 
@@ -154,7 +287,23 @@ git diff  # 모든 메타데이터 포함
 git diff --stat  # 파일명과 변경량만
 ```
 
-## 5. 한글 지원
+### 컴팩트 출력 형식
+
+헬퍼 스크립트의 출력은 간결하게:
+
+```bash
+# 나쁜 예
+echo "==================================="
+echo "현재 상태를 확인하고 있습니다..."
+echo "==================================="
+echo "상태: 정상"
+echo "==================================="
+
+# 좋은 예
+echo "✅ 상태: 정상"
+```
+
+## 7. 한글 지원
 
 ### Bash 명령어 인코딩
 
@@ -186,7 +335,14 @@ with open('file.txt', 'r', encoding='utf-8') as f:
     content = f.read()
 ```
 
-## 6. YAML 문법 주의사항
+### Windows Batch 인코딩
+
+```batch
+@echo off
+chcp 65001 > nul  # UTF-8 코드 페이지 설정
+```
+
+## 8. YAML 문법 주의사항
 
 ### 기본 규칙
 
@@ -217,13 +373,15 @@ description: >
 description: "Use when: analyzing data, creating reports"
 ```
 
-## 7. 스킬 테스트 가이드
+## 9. 스킬 테스트 가이드
 
 ### 테스트 체크리스트
 
 1. **파일 구조 확인**
    ```bash
    ls -la .claude/skills/your-skill/SKILL.md
+   ls -la platforms/linux/scripts/your-skill-helper.sh
+   ls -la platforms/windows/scripts/your-skill-helper.bat
    ```
 
 2. **YAML 검증**
@@ -231,16 +389,26 @@ description: "Use when: analyzing data, creating reports"
    head -n 10 .claude/skills/your-skill/SKILL.md
    ```
 
-3. **Claude Code 재시작**
+3. **setup-platform.py 실행**
+   ```bash
+   python setup-platform.py
+   ```
+
+4. **스크립트 실행 확인**
+   ```bash
+   ./scripts/your-skill-helper.sh help
+   ```
+
+5. **Claude Code 재시작**
    ```bash
    # Claude Code를 재시작하여 스킬 로드
    ```
 
-4. **트리거 테스트**
+6. **트리거 테스트**
    - Description에 명시한 키워드로 요청
    - 예: "Excel 파일 분석해줘" (excel-analyzer 스킬용)
 
-5. **기능 검증**
+7. **기능 검증**
    - 각 기능이 제대로 동작하는지 확인
    - 출력이 컴팩트한지 확인
    - 한글이 깨지지 않는지 확인
@@ -262,7 +430,12 @@ description: "Use when: analyzing data, creating reports"
    - `.claude/skills/[name]/SKILL.md` 경로가 맞나?
    - 파일명이 대문자 `SKILL.md`인가?
 
-## 8. 버전 관리
+4. **헬퍼 스크립트 확인**
+   - `platforms/{linux|windows}/scripts/`에 존재하나?
+   - setup-platform.py로 `scripts/`에 복사되었나?
+   - 실행 권한이 있나? (Linux: `chmod +x`)
+
+## 10. 버전 관리 및 배포
 
 ### 스킬 변경 이력 관리
 
@@ -271,7 +444,7 @@ SKILL.md에 버전 히스토리 섹션 추가:
 ```markdown
 ## 버전 히스토리
 
-- v2.0.0 (2025-11-26): 새 기능 추가, API 변경
+- v2.0.0 (2025-11-27): 헬퍼 스크립트 패턴 적용
 - v1.1.0 (2025-11-20): 한글 인코딩 지원 추가
 - v1.0.0 (2025-11-15): 초기 버전
 ```
@@ -285,11 +458,12 @@ git commit -m "✨ Add new skill: excel-analyzer"
 # 스킬 수정
 git commit -m "📝 Update catchup skill description"
 
+# 헬퍼 스크립트 추가
+git commit -m "✨ Add helper script for coverage-reporter skill"
+
 # 스킬 제거
 git commit -m "🗑️ Remove deprecated pdf-processor skill"
 ```
-
-## 9. 팀 공유
 
 ### 프로젝트 스킬 vs 개인 스킬
 
@@ -297,13 +471,41 @@ git commit -m "🗑️ Remove deprecated pdf-processor skill"
 - 팀 전체가 사용
 - Git에 커밋
 - 프로젝트 규칙/워크플로우
+- 헬퍼 스크립트 포함
 
 **개인 스킬** (`~/.claude/skills/`)
 - 개인 생산성 도구
 - Git에 커밋하지 않음
 - 개인 선호도
+- 헬퍼 스크립트 선택적
 
-### 문서화
+### .gitignore 설정
+
+플랫폼별 스크립트는 platforms/에 커밋하고, scripts/는 무시:
+
+```gitignore
+# Platform-specific files (generated by setup-platform.py)
+# These files are copied from platforms/{windows|linux}/ directory
+# DO NOT commit these files to avoid cross-platform conflicts
+
+# Platform-specific skills
+.claude/skills/catchup/SKILL.md
+.claude/skills/python-runner/SKILL.md
+.claude/skills/study-note/SKILL.md
+
+# Platform-specific scripts
+scripts/git-helper.sh
+scripts/git-helper.bat
+scripts/python-runner.sh
+scripts/python-runner.bat
+scripts/study-note-helper.sh
+scripts/study-note-helper.bat
+
+# Platform configuration (merged by setup-platform.py)
+.katarc
+```
+
+### 팀 공유 문서화
 
 팀 스킬은 README를 추가하여 설명:
 
@@ -320,9 +522,16 @@ git commit -m "🗑️ Remove deprecated pdf-processor skill"
 
 - `openpyxl` 패키지 필요
 - Python 3.8 이상
+
+## 설치
+
+1. 스킬 파일 확인: `.claude/skills/excel-analyzer/SKILL.md`
+2. 헬퍼 스크립트 확인: `platforms/{linux|windows}/scripts/excel-analyzer-helper.{sh|bat}`
+3. setup-platform.py 실행: `python setup-platform.py`
+4. Claude Code 재시작
 ```
 
-## 10. 일반적인 실수
+## 11. 일반적인 실수
 
 ### 실수 1: Description이 너무 짧음
 
@@ -349,8 +558,34 @@ git commit -m "🗑️ Remove deprecated pdf-processor skill"
 ❌ 작성 후 바로 팀에 공유
 ✅ 로컬에서 충분히 테스트 후 공유
 
+### 실수 6: 헬퍼 스크립트 경로 오류
+
+❌ `platforms/scripts/helper.sh` (잘못된 경로)
+✅ `platforms/linux/scripts/helper.sh`, `platforms/windows/scripts/helper.bat`
+
+### 실수 7: setup-platform.py 실행 안 함
+
+❌ 헬퍼 스크립트 작성 후 바로 사용
+✅ setup-platform.py 실행 후 scripts/에 복사된 것 확인
+
+### 실수 8: UTF-8 인코딩 누락
+
+❌ 헬퍼 스크립트에 인코딩 설정 없음
+✅ `export LC_ALL=C.UTF-8` (Linux), `chcp 65001` (Windows)
+
+### 실수 9: .katarc 로드 누락
+
+❌ CURRENT_KATA 변수를 하드코딩
+✅ .katarc에서 로드: `source .katarc`
+
+### 실수 10: Windows 스크립트 누락
+
+❌ Linux 스크립트만 작성
+✅ Linux와 Windows 둘 다 작성
+
 ## 참고 자료
 
 - [Claude Code 공식 문서](https://code.claude.com/docs/en/agent-skills)
 - [YAML 문법 가이드](https://yaml.org/spec/1.2.2/)
-- 프로젝트 예시: [catchup](./../catchup/SKILL.md)
+- 프로젝트 예시: [catchup](./../catchup/SKILL.md), [python-runner](./../python-runner/SKILL.md), [study-note](./../study-note/SKILL.md)
+- 헬퍼 스크립트 예시: [platforms/linux/scripts/](../../platforms/linux/scripts/), [platforms/windows/scripts/](../../platforms/windows/scripts/)
