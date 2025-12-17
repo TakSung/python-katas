@@ -21,12 +21,20 @@ class TkinterUI:
         self.guess_entry = tk.Entry(self.root, textvariable= self.entry_var)
         self.guess_entry.pack(pady =10)
         
-        self.guess_button = tk. Button(self.root, text="추측", command = self.handle_guess)
+        self.guess_button = tk.Button(self.root, text="추측", command = self.handle_guess)
         self.guess_button.pack(pady= 5)
+        
+        self.restart_button = tk.Button(self.root, text="다시 시작", command = self.restart)
+        self.restart_button.pack(pady= 10)
         
         self.result_label = tk.Label(self.root, text = "숫자를 입력하고 추측해 보세요")
         
         self.result_label.pack(pady = 10)
+        
+        self.attempt_label = tk.Label(self.root, text = f"시도횟수:{self.game_service.current_game.attempts}")
+        
+        self.attempt_label.pack(pady = 5)
+        
         
     def handle_guess(self):
         try:
@@ -47,12 +55,17 @@ class TkinterUI:
                     message = "알 수 없는 결과입니다."
                     
             self.result_label.config(text= message)
+            self.attempt_label.config(text=  f"시도횟수:{self.game_service.current_game.attempts}")
         
         except ValueError:
             self.result_label.config(text= "유요한 숫자를 입력해주세요.")
             
         except Exception as e:
             self.result_label.config(text=f"오류 발생:{e}")
+            
+    def restart(self):
+        self.game_service.new_game()   
+        self.result_label.config(text= " ")
     
         
     

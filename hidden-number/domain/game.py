@@ -4,6 +4,7 @@
 # - 게임 상태 (숨겨진 숫자, 시도 횟수, 게임 종료 여부 등)
 
 from enum import Enum, auto
+from dataclasses import dataclass
 
 class GuessResult(Enum):
     TOO_LOW = auto()
@@ -11,10 +12,10 @@ class GuessResult(Enum):
     CORRECT = auto()
     OUT_OF_RANGE = auto()
 
+@dataclass
 class Game:
-    def __init__(self, secret_number: int, attempts: int = 0):
-        self.secret_number = secret_number
-        self.attempts = attempts
+    secret_number : int
+    attempts : int = 0
 
     def guess(self, guessed_number):
         self.attempts += 1
