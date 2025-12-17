@@ -20,9 +20,11 @@ if not exist ".katarc" (
     exit /b 1
 )
 
-REM Parse CURRENT_KATA from .katarc
+REM Parse configuration from .katarc
 for /f "tokens=1,2 delims==" %%a in (.katarc) do (
     if "%%a"=="CURRENT_KATA" set CURRENT_KATA=%%b
+    if "%%a"=="ENV_TYPE" set ENV_TYPE=%%b
+    if "%%a"=="CONDA_ENV_NAME" set CONDA_ENV_NAME=%%b
 )
 
 if "%CURRENT_KATA%"=="" (
@@ -120,13 +122,33 @@ REM Function to run command in venv
 set CMD_TO_RUN=%~1
 echo %BLUE%=== Executing in venv for kata '%CURRENT_KATA%':%NC% %YELLOW%%CMD_TO_RUN%%NC%
 
-REM Check if .venv exists
-if not exist ".venv" (
-    echo %RED%❌ .venv not found. Please create virtual environment first.%NC%
-    echo %YELLOW%Hint: Run 'uv venv' to create virtual environment%NC%
-    exit /b 1
-)
+REM Check environment type and activate accordingly
+if "%ENV_TYPE%"=="conda" (
+    REM Conda environment
+    if "%CONDA_ENV_NAME%"=="" (
+        echo %RED%❌ CONDA_ENV_NAME not set in .katarc%NC%
+        exit /b 1
+    )
 
-REM Activate venv and run command
-call .venv\Scripts\activate.bat && %CMD_TO_RUN%
-exit /b %ERRORLEVEL%
+    REM Check if conda is available
+    where conda >nul 2>&1
+    if errorlevel 1 (
+        echo %RED%❌ conda not found. Please install Conda/Miniconda.%NC%
+        exit /b 1
+    )
+
+    REM Activate conda environment and run command
+    call conda activate %CONDA_ENV_NAME% && %CMD_TO_RUN%
+    exit /b !ERRORLEVEL!
+) else (
+    REM Default: venv/uv environment
+    if not exist ".venv" (
+        echo %RED%❌ .venv not found. Please create virtual environment first.%NC%
+        echo %YELLOW%Hint: Run 'uv venv' to create virtual environment%NC%
+        exit /b 1
+    )
+
+    REM Activate venv and run command
+    call .venv\Scripts\activate.bat && %CMD_TO_RUN%
+    exit /b !ERRORLEVEL!
+)
