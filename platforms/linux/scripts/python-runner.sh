@@ -33,15 +33,34 @@ run_in_venv() {
     local cmd_to_run=$1
     echo -e "${BLUE}==> Executing in venv for kata '${CURRENT_KATA}':${NC} ${YELLOW}${cmd_to_run}${NC}"
 
-    # Check if .venv exists
-    if [ ! -d ".venv" ]; then
-        echo -e "${RED}❌ .venv not found. Please create virtual environment first.${NC}"
-        echo -e "${YELLOW}Hint: Run 'uv venv' to create virtual environment${NC}"
-        exit 1
-    fi
+    # Check environment type and activate accordingly
+    if [ "${ENV_TYPE}" = "conda" ]; then
+        # Conda environment
+        if [ -z "${CONDA_ENV_NAME}" ]; then
+            echo -e "${RED}❌ CONDA_ENV_NAME not set in .katarc${NC}"
+            exit 1
+        fi
 
-    # Activate venv and run command
-    source .venv/bin/activate && eval "${cmd_to_run}"
+        # Check if conda is available
+        if ! command -v conda &> /dev/null; then
+            echo -e "${RED}❌ conda not found. Please install Conda/Miniconda.${NC}"
+            exit 1
+        fi
+
+        # Activate conda environment and run command
+        eval "$(conda shell.bash hook)"
+        conda activate "${CONDA_ENV_NAME}" && eval "${cmd_to_run}"
+    else
+        # Default: venv/uv environment
+        if [ ! -d ".venv" ]; then
+            echo -e "${RED}❌ .venv not found. Please create virtual environment first.${NC}"
+            echo -e "${YELLOW}Hint: Run 'uv venv' to create virtual environment${NC}"
+            exit 1
+        fi
+
+        # Activate venv and run command
+        source .venv/bin/activate && eval "${cmd_to_run}"
+    fi
 }
 
 # Main script logic
